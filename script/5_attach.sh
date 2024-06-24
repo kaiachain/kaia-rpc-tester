@@ -3,5 +3,5 @@ if [ "$1" = "rpc" ]; then
 elif [ "$1" = "ws" ]; then
   cn/bin/kcn attach ws://localhost:8552
 else
-  cn/bin/kcn attach cn/data/klay.ipc
+  cn/bin/kcn attach cn/data/kaia.ipc
 fi

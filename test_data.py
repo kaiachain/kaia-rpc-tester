@@ -1,14 +1,14 @@
 import json
 from utils import Utils
 
-# Below value are immutable which means Klaytn node always return that values
+# Below value are immutable which means Kaia node always return that values
 # when you call RPC with `eth_` namesapce APIs.
 ETH_BASEFEE_PER_GAS = "0x5d21dba00"
 ETH_EXTRADATA = "0x"
 ETH_SHA3_UNCLES = "0x1dcc4de8dec75d7aab85b567b6ccd41ad312451b948a7413f0a142fd40d49347"
 ETH_MIX_HASH = "0x0000000000000000000000000000000000000000000000000000000000000000"
 ETH_NONCE = "0x0000000000000000"
-ETH_DIFFICULTY = "0x1"  # This value is from Klaytn's blockscore which is always 0x1.
+ETH_DIFFICULTY = "0x1"  # This value is from Kaia's blockscore which is always 0x1.
 immutable_fields = {
     "baseFeePerGas": ETH_BASEFEE_PER_GAS,
     "extraData": ETH_EXTRADATA,

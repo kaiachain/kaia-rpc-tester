@@ -50,7 +50,7 @@ class Utils(unittest.TestCase):
         log_path = f"./reports/{log_directory_name}"
         pathlib.Path(log_path).mkdir(parents=True, exist_ok=True)
 
-        log_file_name = f"{log_path}/klaytn.log"
+        log_file_name = f"{log_path}/kaia.log"
 
         return log_path, log_directory_name, log_file_name
 
@@ -202,12 +202,12 @@ class Utils(unittest.TestCase):
 
     @staticmethod
     def get_console_result_with_index(screenshot, command, log_file, save_result=False, columns=0):
-        klaytn_list, command_index = Utils.parse_command(screenshot, command, columns)
+        kaia_list, command_index = Utils.parse_command(screenshot, command, columns)
 
         # Make a string from command_index to last line and remove white spaces.
-        result_string = " ".join(klaytn_list[command_index:]).replace(" ", "")
+        result_string = " ".join(kaia_list[command_index:]).replace(" ", "")
 
-        # There is no quotation at key of returned json result from klaytn console.
+        # There is no quotation at key of returned json result from kaia console.
         # Use regular expressions to change it to valid json string.
         valid_json = re.sub(r"(?<={|,)([a-zA-Z][a-zA-Z0-9]*)(?=:)", r'"\1"', result_string)
 
@@ -228,25 +228,25 @@ class Utils(unittest.TestCase):
 
         # Split screenshot by lines and convert it to the array and remove ''.
         # Maximum lines of screenshot is 9999.
-        klaytn_list = list(filter(None, screenshot.splitlines()))
+        kaia_list = list(filter(None, screenshot.splitlines()))
 
         # Check the last line of an array and remove when it is '>' (waiting command status).
-        last_index = len(klaytn_list) - 1
-        if klaytn_list[last_index] == ">":
-            del klaytn_list[-1]
+        last_index = len(kaia_list) - 1
+        if kaia_list[last_index] == ">":
+            del kaia_list[-1]
 
-        # Checks the index of klaytn command at the last of array.
+        # Checks the index of kaia command at the last of array.
         # If command is longer than terminal's width(columns), find after cutting it out.
         if columns == 0:
-            command_index = last_index - klaytn_list[::-1].index(command)
+            command_index = last_index - kaia_list[::-1].index(command)
         else:
-            command_index = last_index - klaytn_list[::-1].index(command[:columns])
+            command_index = last_index - kaia_list[::-1].index(command[:columns])
 
-        return klaytn_list, command_index
+        return kaia_list, command_index
 
     @staticmethod
     def get_console_sub_command(screenshot, command, logfile, save_result=False, columns=0):
-        klaytn_list, command_index = Utils.parse_command(screenshot, command, columns)
+        kaia_list, command_index = Utils.parse_command(screenshot, command, columns)
         Utils.write_console_log(logfile, command_index, command, None, save_file=save_result)
         return command
 
@@ -347,16 +347,16 @@ class Utils(unittest.TestCase):
         sys.stdout.write("\n\n")
 
     @staticmethod
-    def to_peb(klay):
-        """Convert unit KLAY to Peb."""
-        peb = 0
-        if isinstance(klay, float):
-            peb = int(klay * 1000000000000000000.0)
+    def to_kei(kaia):
+        """Convert unit KAIA to Kei."""
+        kei = 0
+        if isinstance(kaia, float):
+            kei = int(kaia * 1000000000000000000.0)
 
-        if isinstance(klay, int):
-            peb = klay * 1000000000000000000
+        if isinstance(kaia, int):
+            kei = kaia * 1000000000000000000
 
-        return peb
+        return kei
 
     @staticmethod
     def check_error(target_instance, expected_error_key, error):

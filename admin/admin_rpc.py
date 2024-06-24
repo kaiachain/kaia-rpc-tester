@@ -144,14 +144,14 @@ class TestAdminNamespaceRPC(unittest.TestCase):
         self.assertTrue(ws_result)
         self.assertIsNone(error)
 
-        Utils.waiting_count("Waiting for", self.waiting_count, "seconds until stacking some klay logs.")
+        Utils.waiting_count("Waiting for", self.waiting_count, "seconds until stacking some kaia logs.")
 
     def test_admin_stopRPC_error_http_rpc_not_running_using_ws(self):
         method = f"{self.ns}_stopRPC"
         _, error = Utils.call_ws(self.endpoint, method, None, self.log_path)  # Using WebSocket is intended.
         Utils.check_error(self, "HTTPRPCNotRunning", error)
 
-        Utils.waiting_count("Waiting for", self.waiting_count, "seconds until stacking some klay logs.")
+        Utils.waiting_count("Waiting for", self.waiting_count, "seconds until stacking some kaia logs.")
 
     def test_admin_startRPC_success_using_ws(self):
         # During running above tests, http endpoint is closed so we must request using WebSocket.
@@ -167,7 +167,7 @@ class TestAdminNamespaceRPC(unittest.TestCase):
         self.assertTrue(ws_result)
         self.assertIsNone(error)
 
-        Utils.waiting_count("Waiting for", self.waiting_count, "seconds until stacking some klay logs.")
+        Utils.waiting_count("Waiting for", self.waiting_count, "seconds until stacking some kaia logs.")
 
     def test_admin_startRPC_success_no_param_using_ws(self):
         method = f"{self.ns}_startRPC"
@@ -179,14 +179,14 @@ class TestAdminNamespaceRPC(unittest.TestCase):
         host = "0.0.0.0"
         port = int(self.rpc_port)
         cors = "*"
-        apis = "admin,eth,klay,net,personal,debug,web3,txpool"
+        apis = "admin,eth,kaia,net,personal,debug,web3,txpool"
         return [host, port, cors, apis]
 
     def create_params_for_starting_ws(self):
         host = "0.0.0.0"
         port = int(self.ws_port)
         cors = "*"
-        apis = "admin,eth,klay,net,personal,debug,web3,txpool"
+        apis = "admin,eth,kaia,net,personal,debug,web3,txpool"
         return [host, port, cors, apis]
 
     def test_admin_startRPC_error_wrong_type_param1_using_ws(self):
@@ -245,7 +245,7 @@ class TestAdminNamespaceRPC(unittest.TestCase):
         self.assertTrue(result_from_rpc)
         self.assertIsNone(error)
 
-        Utils.waiting_count("Waiting for", self.waiting_count, "seconds until stacking some klay logs.")
+        Utils.waiting_count("Waiting for", self.waiting_count, "seconds until stacking some kaia logs.")
 
     def test_admin_startWS_success_using_rpc(self):
         method = f"{self.ns}_startWS"
@@ -261,7 +261,7 @@ class TestAdminNamespaceRPC(unittest.TestCase):
         self.assertTrue(result_from_rpc)
         self.assertIsNone(error)
 
-        Utils.waiting_count("Waiting for", self.waiting_count, "seconds until stacking some klay logs.")
+        Utils.waiting_count("Waiting for", self.waiting_count, "seconds until stacking some kaia logs.")
 
     def test_admin_stopWS_error_ws_not_running_using_rpc(self):
         method = f"{self.ns}_stopWS"
@@ -330,7 +330,7 @@ class TestAdminNamespaceRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, [file_path], self.log_path)
         self.assertIsNone(error)
 
-        Utils.waiting_count("Waiting for", self.waiting_count, "seconds until stacking some klay logs.")
+        Utils.waiting_count("Waiting for", self.waiting_count, "seconds until stacking some kaia logs.")
 
         self.assertTrue(pathlib.Path.exists(pathlib.Path(file_path)))
 
@@ -340,7 +340,7 @@ class TestAdminNamespaceRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, [file_path], self.log_path)
         Utils.check_error(self, "ExistingFile", error)
 
-        Utils.waiting_count("Waiting for", self.waiting_count, "seconds until stacking some klay logs.")
+        Utils.waiting_count("Waiting for", self.waiting_count, "seconds until stacking some kaia logs.")
 
     def test_admin_exportChain_error_no_param(self):
         method = f"{self.ns}_exportChain"
@@ -353,7 +353,7 @@ class TestAdminNamespaceRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, [file_path], self.log_path)
         self.assertIsNone(error)
 
-        Utils.waiting_count("Waiting for", self.waiting_count, "seconds until stacking some klay logs.")
+        Utils.waiting_count("Waiting for", self.waiting_count, "seconds until stacking some kaia logs.")
 
     def test_admin_importChain_error_no_param(self):
         method = f"{self.ns}_importChain"
@@ -375,7 +375,7 @@ class TestAdminNamespaceRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, [], self.log_path)
         self.assertIsNone(error)
 
-        Utils.waiting_count("Waiting for", self.waiting_count, "seconds until stacking some klay logs.")
+        Utils.waiting_count("Waiting for", self.waiting_count, "seconds until stacking some kaia logs.")
 
     @staticmethod
     def suite():

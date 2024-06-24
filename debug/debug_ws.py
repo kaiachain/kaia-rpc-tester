@@ -1,7 +1,7 @@
 import unittest
 
 from utils import Utils
-from common import klay as klay_common
+from common import kaia as kaia_common
 from common import personal as personal_common
 from utils import PROJECT_ROOT_DIR
 
@@ -90,7 +90,7 @@ class TestDebugNamespaceWS(unittest.TestCase):
         Utils.check_error(self, "arg0HexToHash", error)
 
     def test_debug_getModifiedAccountsByHash_error_wrong_type_param2(self):
-        latest_block = klay_common.get_latest_block_by_number(self.endpoint)
+        latest_block = kaia_common.get_latest_block_by_number(self.endpoint)
         self.assertIsNotNone(latest_block)
         start_block_hash = latest_block["parentHash"]
 
@@ -100,7 +100,7 @@ class TestDebugNamespaceWS(unittest.TestCase):
         Utils.check_error(self, "arg1HexToHash", error)
 
     def test_debug_getModifiedAccountsByHash_error_wrong_value_param1(self):
-        latest_block = klay_common.get_latest_block_by_number(self.endpoint)
+        latest_block = kaia_common.get_latest_block_by_number(self.endpoint)
         self.assertIsNotNone(latest_block)
         start_block_hash = latest_block["parentHash"]
         non_existing_start_block_hash = start_block_hash[:-3] + "fff"
@@ -116,7 +116,7 @@ class TestDebugNamespaceWS(unittest.TestCase):
         )
 
     def test_debug_getModifiedAccountsByHash_error_wrong_value_param2(self):
-        latest_block = klay_common.get_latest_block_by_number(self.endpoint)
+        latest_block = kaia_common.get_latest_block_by_number(self.endpoint)
         self.assertIsNotNone(latest_block)
         start_block_hash = latest_block["parentHash"]
         end_block_hash = latest_block["hash"]
@@ -132,7 +132,7 @@ class TestDebugNamespaceWS(unittest.TestCase):
         )
 
     def test_debug_getModifiedAccountsByHash_success(self):
-        latest_block = klay_common.get_latest_block_by_number(self.endpoint)
+        latest_block = kaia_common.get_latest_block_by_number(self.endpoint)
         self.assertIsNotNone(latest_block)
         start_block_hash = latest_block["parentHash"]
         end_block_hash = latest_block["hash"]
@@ -153,7 +153,7 @@ class TestDebugNamespaceWS(unittest.TestCase):
         Utils.check_error(self, "arg0HexWithoutPrefix", error)
 
     def test_debug_getModifiedAccountsByNumber_error_wrong_type_param2(self):
-        block_number = klay_common.get_block_number(self.endpoint)
+        block_number = kaia_common.get_block_number(self.endpoint)
         self.assertIsNotNone(block_number)
         start_block_number = int(block_number, 0)
 
@@ -163,7 +163,7 @@ class TestDebugNamespaceWS(unittest.TestCase):
         Utils.check_error(self, "arg1HexWithoutPrefix", error)
 
     def test_debug_getModifiedAccountsByNumber_error_wrong_value_param1(self):
-        block_number = klay_common.get_block_number(self.endpoint)
+        block_number = kaia_common.get_block_number(self.endpoint)
         self.assertIsNotNone(block_number)
         block_number = int(block_number, 0)
         start_block_number = block_number + 1000
@@ -176,7 +176,7 @@ class TestDebugNamespaceWS(unittest.TestCase):
         self.assertEqual(f"start block number #{start_block_number} not found", error.get("message"))
 
     def test_debug_getModifiedAccountsByNumber_error_wrong_value_param2(self):
-        block_number = klay_common.get_block_number(self.endpoint)
+        block_number = kaia_common.get_block_number(self.endpoint)
         self.assertIsNotNone(block_number)
         block_number = int(block_number, 0)
         start_block_number = block_number - 1
@@ -189,7 +189,7 @@ class TestDebugNamespaceWS(unittest.TestCase):
         self.assertEqual(f"end block number #{end_block_number} not found", error.get("message"))
 
     def test_debug_getModifiedAccountsByNumber_success(self):
-        block_number = klay_common.get_block_number(self.endpoint)
+        block_number = kaia_common.get_block_number(self.endpoint)
         self.assertIsNotNone(block_number)
         block_number = int(block_number, 0)
         start_block_number = block_number - 1
@@ -287,7 +287,7 @@ class TestDebugNamespaceWS(unittest.TestCase):
         Utils.check_error(self, "BlockNotFound", error)
 
     def test_debug_dumpBlock_success(self):
-        block_number = klay_common.get_block_number(self.endpoint)
+        block_number = kaia_common.get_block_number(self.endpoint)
         # It must be a multiple of state.block-interval value. It is set as 128 now.
         block_number = (int(block_number, 0) // 128) * 128
         block_number = hex(block_number)
@@ -317,7 +317,7 @@ class TestDebugNamespaceWS(unittest.TestCase):
         Utils.check_error(self, "arg0HexWithoutPrefix", error)
 
     def test_debug_getBlockRlp_error_wrong_value_param(self):
-        block_number = klay_common.get_block_number(self.endpoint)
+        block_number = kaia_common.get_block_number(self.endpoint)
         invalid_block_number = int(block_number, 0) + 1000
 
         method = f"{self.ns}_getBlockRlp"
@@ -326,7 +326,7 @@ class TestDebugNamespaceWS(unittest.TestCase):
         self.assertEqual(f"block #{invalid_block_number} not found", error.get("message"))
 
     def test_debug_getBlockRlp_success(self):
-        block_number = klay_common.get_block_number(self.endpoint)
+        block_number = kaia_common.get_block_number(self.endpoint)
         block_number = int(block_number, 0)
 
         method = f"{self.ns}_getBlockRlp"
@@ -345,7 +345,7 @@ class TestDebugNamespaceWS(unittest.TestCase):
         )
 
     def test_debug_traceBlock_success(self):
-        block_number = klay_common.get_block_number(self.endpoint)
+        block_number = kaia_common.get_block_number(self.endpoint)
         block_number = int(block_number, 0)
 
         method = f"{self.ns}_getBlockRlp"
@@ -387,7 +387,7 @@ class TestDebugNamespaceWS(unittest.TestCase):
         Utils.check_error(self, "BlockNotExist", error)
 
     def test_debug_traceBlockByNumber_success(self):
-        block_number = klay_common.get_block_number(self.endpoint)
+        block_number = kaia_common.get_block_number(self.endpoint)
         block_number = int(block_number, 0)
 
         method = f"{self.ns}_traceBlockByNumber"
@@ -405,7 +405,7 @@ class TestDebugNamespaceWS(unittest.TestCase):
         Utils.check_error(self, "arg0HexToHash", error)
 
     def test_debug_traceBlockByHash_error_wrong_value_param(self):
-        latest_block = klay_common.get_latest_block_by_number(self.endpoint)
+        latest_block = kaia_common.get_latest_block_by_number(self.endpoint)
         block_hash = latest_block["hash"]
         invalid_block_hash = block_hash[:-3] + "fff"
 
@@ -415,7 +415,7 @@ class TestDebugNamespaceWS(unittest.TestCase):
         self.assertEqual(f"the block does not exist (block hash: " + invalid_block_hash + ")", error.get("message"))
 
     def test_debug_traceBlockByHash_success(self):
-        latest_block = klay_common.get_latest_block_by_number(self.endpoint)
+        latest_block = kaia_common.get_latest_block_by_number(self.endpoint)
         block_hash = latest_block["hash"]
 
         method = f"{self.ns}_traceBlockByHash"
@@ -808,7 +808,7 @@ class TestDebugNamespaceWS(unittest.TestCase):
         Utils.check_error(self, "arg0NonstringToHash", error)
 
     def test_debug_standardTraceBlockToFile_error_wrong_value_param(self):
-        latest_block = klay_common.get_latest_block_by_number(self.endpoint)
+        latest_block = kaia_common.get_latest_block_by_number(self.endpoint)
         invalid_block_hash = latest_block["hash"][:-3] + "fff"
 
         method = f"{self.ns}_standardTraceBlockToFile"
@@ -817,7 +817,7 @@ class TestDebugNamespaceWS(unittest.TestCase):
         self.assertEqual(f"block {invalid_block_hash[2:]} not found", error.get("message"))
 
     def test_debug_standardTraceBlockToFile_success(self):
-        latest_block = klay_common.get_latest_block_by_number(self.endpoint)
+        latest_block = kaia_common.get_latest_block_by_number(self.endpoint)
         block_hash = latest_block["hash"]
 
         method = f"{self.ns}_standardTraceBlockToFile"

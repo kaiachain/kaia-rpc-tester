@@ -6,7 +6,7 @@ from functools import wraps
 from HtmlTestRunner import HTMLTestRunner
 from utils import Utils
 from common import personal as personal_common
-from common import klay as klay_common
+from common import kaia as kaia_common
 from admin import admin_rpc
 from admin import admin_ws
 from admin.admin_rpc import TestAdminNamespaceRPC
@@ -27,30 +27,30 @@ from txpool import txpool_rpc
 from txpool import txpool_ws
 from txpool.txpool_rpc import TestTxpoolNamespaceRPC
 from txpool.txpool_ws import TestTxpoolNamespaceWS
-from klay.account import klay_account_rpc
-from klay.account import klay_account_ws
-from klay.account.klay_account_rpc import TestKlayNamespaceAccountRPC
-from klay.account.klay_account_ws import TestKlayNamespaceAccountWS
-from klay.block import klay_block_rpc
-from klay.block import klay_block_ws
-from klay.block.klay_block_rpc import TestKlayNamespaceBlockRPC
-from klay.block.klay_block_ws import TestKlayNamespaceBlockWS
-from klay.configuration import klay_configuration_rpc
-from klay.configuration import klay_configuration_ws
-from klay.configuration.klay_configuration_rpc import TestKlayNamespaceConfigurationRPC
-from klay.configuration.klay_configuration_ws import TestKlayNamespaceConfigurationWS
-from klay.miscellaneous import klay_miscellaneous_rpc
-from klay.miscellaneous import klay_miscellaneous_ws
-from klay.miscellaneous.klay_miscellaneous_rpc import TestKlayNamespaceMiscellaneousRPC
-from klay.miscellaneous.klay_miscellaneous_ws import TestKlayNamespaceMiscellaneousWS
-from klay.transaction import klay_transaction_rpc
-from klay.transaction import klay_transaction_ws
-from klay.transaction.klay_transaction_rpc import TestKlayNamespaceTransactionRPC
-from klay.transaction.klay_transaction_ws import TestKlayNamespaceTransactionWS
-from klay.filter import klay_filter_rpc
-from klay.filter import klay_filter_ws
-from klay.filter.klay_filter_rpc import TestKlayNamespaceFilterRPC
-from klay.filter.klay_filter_ws import TestKlayNamespaceFilterWS
+from kaia.account import kaia_account_rpc
+from kaia.account import kaia_account_ws
+from kaia.account.kaia_account_rpc import TestKaiaNamespaceAccountRPC
+from kaia.account.kaia_account_ws import TestKaiaNamespaceAccountWS
+from kaia.block import kaia_block_rpc
+from kaia.block import kaia_block_ws
+from kaia.block.kaia_block_rpc import TestKaiaNamespaceBlockRPC
+from kaia.block.kaia_block_ws import TestKaiaNamespaceBlockWS
+from kaia.configuration import kaia_configuration_rpc
+from kaia.configuration import kaia_configuration_ws
+from kaia.configuration.kaia_configuration_rpc import TestKaiaNamespaceConfigurationRPC
+from kaia.configuration.kaia_configuration_ws import TestKaiaNamespaceConfigurationWS
+from kaia.miscellaneous import kaia_miscellaneous_rpc
+from kaia.miscellaneous import kaia_miscellaneous_ws
+from kaia.miscellaneous.kaia_miscellaneous_rpc import TestKaiaNamespaceMiscellaneousRPC
+from kaia.miscellaneous.kaia_miscellaneous_ws import TestKaiaNamespaceMiscellaneousWS
+from kaia.transaction import kaia_transaction_rpc
+from kaia.transaction import kaia_transaction_ws
+from kaia.transaction.kaia_transaction_rpc import TestKaiaNamespaceTransactionRPC
+from kaia.transaction.kaia_transaction_ws import TestKaiaNamespaceTransactionWS
+from kaia.filter import kaia_filter_rpc
+from kaia.filter import kaia_filter_ws
+from kaia.filter.kaia_filter_rpc import TestKaiaNamespaceFilterRPC
+from kaia.filter.kaia_filter_ws import TestKaiaNamespaceFilterWS
 from eth.account import eth_account_rpc
 from eth.account import eth_account_ws
 from eth.account.eth_account_rpc import TestEthNamespaceAccountRPC
@@ -79,10 +79,10 @@ from eth.gas import eth_gas_rpc
 from eth.gas import eth_gas_ws
 from eth.gas.eth_gas_rpc import TestEthNamespaceGasRPC
 from eth.gas.eth_gas_ws import TestEthNamespaceGasWS
-from klay.gas import klay_gas_rpc
-from klay.gas import klay_gas_ws
-from klay.gas.klay_gas_rpc import TestKlayNamespaceGasRPC
-from klay.gas.klay_gas_ws import TestKlayNamespaceGasWS
+from kaia.gas import kaia_gas_rpc
+from kaia.gas import kaia_gas_ws
+from kaia.gas.kaia_gas_rpc import TestKaiaNamespaceGasRPC
+from kaia.gas.kaia_gas_ws import TestKaiaNamespaceGasWS
 
 
 test_data_set = None
@@ -133,18 +133,18 @@ decorate_all_functions(TestPersonalNamespaceRPC, my_decorator)
 decorate_all_functions(TestPersonalNamespaceWS, my_decorator)
 decorate_all_functions(TestTxpoolNamespaceRPC, my_decorator)
 decorate_all_functions(TestTxpoolNamespaceWS, my_decorator)
-decorate_all_functions(TestKlayNamespaceAccountRPC, my_decorator)
-decorate_all_functions(TestKlayNamespaceAccountWS, my_decorator)
-decorate_all_functions(TestKlayNamespaceBlockRPC, my_decorator)
-decorate_all_functions(TestKlayNamespaceBlockWS, my_decorator)
-decorate_all_functions(TestKlayNamespaceConfigurationRPC, my_decorator)
-decorate_all_functions(TestKlayNamespaceConfigurationWS, my_decorator)
-decorate_all_functions(TestKlayNamespaceMiscellaneousRPC, my_decorator)
-decorate_all_functions(TestKlayNamespaceMiscellaneousWS, my_decorator)
-decorate_all_functions(TestKlayNamespaceTransactionRPC, my_decorator)
-decorate_all_functions(TestKlayNamespaceTransactionWS, my_decorator)
-decorate_all_functions(TestKlayNamespaceFilterRPC, my_decorator)
-decorate_all_functions(TestKlayNamespaceFilterWS, my_decorator)
+decorate_all_functions(TestKaiaNamespaceAccountRPC, my_decorator)
+decorate_all_functions(TestKaiaNamespaceAccountWS, my_decorator)
+decorate_all_functions(TestKaiaNamespaceBlockRPC, my_decorator)
+decorate_all_functions(TestKaiaNamespaceBlockWS, my_decorator)
+decorate_all_functions(TestKaiaNamespaceConfigurationRPC, my_decorator)
+decorate_all_functions(TestKaiaNamespaceConfigurationWS, my_decorator)
+decorate_all_functions(TestKaiaNamespaceMiscellaneousRPC, my_decorator)
+decorate_all_functions(TestKaiaNamespaceMiscellaneousWS, my_decorator)
+decorate_all_functions(TestKaiaNamespaceTransactionRPC, my_decorator)
+decorate_all_functions(TestKaiaNamespaceTransactionWS, my_decorator)
+decorate_all_functions(TestKaiaNamespaceFilterRPC, my_decorator)
+decorate_all_functions(TestKaiaNamespaceFilterWS, my_decorator)
 decorate_all_functions(TestEthNamespaceAccountRPC, my_decorator)
 decorate_all_functions(TestEthNamespaceAccountWS, my_decorator)
 decorate_all_functions(TestEthNamespaceBlockRPC, my_decorator)
@@ -159,8 +159,8 @@ decorate_all_functions(TestEthNamespaceFilterRPC, my_decorator)
 decorate_all_functions(TestEthNamespaceFilterWS, my_decorator)
 decorate_all_functions(TestEthNamespaceGasRPC, my_decorator)
 decorate_all_functions(TestEthNamespaceGasWS, my_decorator)
-decorate_all_functions(TestKlayNamespaceGasRPC, my_decorator)
-decorate_all_functions(TestKlayNamespaceGasWS, my_decorator)
+decorate_all_functions(TestKaiaNamespaceGasRPC, my_decorator)
+decorate_all_functions(TestKaiaNamespaceGasWS, my_decorator)
 
 
 def parse_arguments():
@@ -253,7 +253,7 @@ def load_test_data():
     test_data_set["account"]["receiver"]["address"] = "0x44711E89b0c23845b5B2ed9D3716BA42b8a3e075"
     # 1pebHolder is for estimateGas test case
     test_data_set["account"]["1pebHolder"]["address"] = "0x1111111111111111111111111111111111111111"
-    gas_price, error = Utils.call_rpc("", "klay_gasPrice", [], log_path)
+    gas_price, error = Utils.call_rpc("", "kaia_gasPrice", [], log_path)
     assert error is None
     test_data_set["unitGasPrice"] = gas_price
 
@@ -594,7 +594,7 @@ def makeTxData():
     for tx in txs:
         if "FeeDelegated" in tx["type"]:
             # Sign the transaction as a sender before signing as a fee payer
-            method = "klay_signTransaction"
+            method = "kaia_signTransaction"
             params = [tx["tx"]]
             result, error = Utils.call_rpc("", method, params, log_path)
             assert error is None
@@ -602,14 +602,14 @@ def makeTxData():
             tx["tx"]["nonce"] = result["tx"]["nonce"]
 
             # After signing the tx as a sender, send tx to the Node as a fee payer
-            method = "klay_sendTransactionAsFeePayer"
+            method = "kaia_sendTransactionAsFeePayer"
             params = [tx["tx"]]
             result, error = Utils.call_rpc("", method, params, log_path)
             assert error is None
             tx["result"]["hash"] = result
 
         else:
-            method = "klay_sendTransaction"
+            method = "kaia_sendTransaction"
             params = [tx["tx"]]
             result, error = Utils.call_rpc("", method, params, log_path)
             assert error is None
@@ -618,7 +618,7 @@ def makeTxData():
     Utils.waiting_count("Waiting for", 5, "seconds to transaction is finalized.")
 
     for tx in txs:
-        result, error = klay_common.get_transaction_receipt(config.get("endpoint"), [tx["result"]["hash"]])
+        result, error = kaia_common.get_transaction_receipt(config.get("endpoint"), [tx["result"]["hash"]])
         tx["result"]["blockHash"] = result["blockHash"]
         tx["result"]["blockNumber"] = result["blockNumber"]
         tx["result"]["index"] = result["transactionIndex"]
@@ -657,17 +657,17 @@ def prepare():
             "value": "0x0",
             "data": contracts[contract]["data"],
         }
-        transaction_hash, error = klay_common.send_transaction(config.get("endpoint"), [tx_args])
+        transaction_hash, error = kaia_common.send_transaction(config.get("endpoint"), [tx_args])
         assert error is None
         Utils.waiting_count("Waiting for", 5, "seconds to transaction is finalized.")
 
-        receipt, error = klay_common.get_transaction_receipt(config.get("endpoint"), [transaction_hash])
+        receipt, error = kaia_common.get_transaction_receipt(config.get("endpoint"), [transaction_hash])
         assert error is None
         test_data_set["contracts"][contract]["address"][0] = receipt["contractAddress"]
 
 
 def make_multisig_account():
-    method = "klay_sendRawTransaction"
+    method = "kaia_sendRawTransaction"
     params = [
         "0x20f8db808604bab82720008366926694a2a8854b1802d8cd5de631e690817c253d6a9153b86f05f86ca302a103f26489914098c5da51f0f646e3000da4d6197217df082b4f7ce1530f0a0cbf2aa302a10263021199702b9fefca617bdcb2a9ed4a810dfa8d270d4e804a1e778450e63ec3a302a103dc9dccbd788c00fa98f7f4082f2f714e799bc0c29d63f04d48b54fe6250453cdf847f845820fe9a05a718af76dfc82143975058065acb99c4d66bac99c3d226e7dde31d6b954de14a03b17300eb773d4a2a20b71b92eae33f1411dc74bb80e0c2316572345908539e7"
     ]
@@ -690,18 +690,18 @@ def inject_test_data_to_testcases():
     personal_ws.test_data_set = test_data_set
     txpool_rpc.test_data_set = test_data_set
     txpool_ws.test_data_set = test_data_set
-    klay_account_rpc.test_data_set = test_data_set
-    klay_account_ws.test_data_set = test_data_set
-    klay_block_rpc.test_data_set = test_data_set
-    klay_block_ws.test_data_set = test_data_set
-    klay_configuration_rpc.test_data_set = test_data_set
-    klay_configuration_ws.test_data_set = test_data_set
-    klay_miscellaneous_rpc.test_data_set = test_data_set
-    klay_miscellaneous_ws.test_data_set = test_data_set
-    klay_transaction_rpc.test_data_set = test_data_set
-    klay_transaction_ws.test_data_set = test_data_set
-    klay_filter_rpc.test_data_set = test_data_set
-    klay_filter_ws.test_data_set = test_data_set
+    kaia_account_rpc.test_data_set = test_data_set
+    kaia_account_ws.test_data_set = test_data_set
+    kaia_block_rpc.test_data_set = test_data_set
+    kaia_block_ws.test_data_set = test_data_set
+    kaia_configuration_rpc.test_data_set = test_data_set
+    kaia_configuration_ws.test_data_set = test_data_set
+    kaia_miscellaneous_rpc.test_data_set = test_data_set
+    kaia_miscellaneous_ws.test_data_set = test_data_set
+    kaia_transaction_rpc.test_data_set = test_data_set
+    kaia_transaction_ws.test_data_set = test_data_set
+    kaia_filter_rpc.test_data_set = test_data_set
+    kaia_filter_ws.test_data_set = test_data_set
     eth_account_rpc.test_data_set = test_data_set
     eth_account_ws.test_data_set = test_data_set
     eth_block_rpc.test_data_set = test_data_set
@@ -716,8 +716,8 @@ def inject_test_data_to_testcases():
     eth_filter_ws.test_data_set = test_data_set
     eth_gas_rpc.test_data_set = test_data_set
     eth_gas_ws.test_data_set = test_data_set
-    klay_gas_rpc.test_data_set = test_data_set
-    klay_gas_ws.test_data_set = test_data_set
+    kaia_gas_rpc.test_data_set = test_data_set
+    kaia_gas_ws.test_data_set = test_data_set
 
 
 def load_test_suites():
@@ -729,7 +729,7 @@ def load_test_suites():
     rpc_test_suites = list()
     ws_test_suites = list()
 
-    namespaces = config.get("namespaces", "admin,debug,eth,governance,klay,net,personal,txpool")
+    namespaces = config.get("namespaces", "admin,debug,eth,governance,kaia,net,personal,txpool")
     namespaces = namespaces.split(",")
 
     if "admin" in namespaces:
@@ -752,21 +752,21 @@ def load_test_suites():
         rpc_test_suites.append(TestTxpoolNamespaceRPC.suite())
         ws_test_suites.append(TestTxpoolNamespaceWS.suite())
 
-    if "klay" in namespaces:
-        rpc_test_suites.append(TestKlayNamespaceAccountRPC.suite())
-        ws_test_suites.append(TestKlayNamespaceAccountWS.suite())
-        rpc_test_suites.append(TestKlayNamespaceBlockRPC.suite())
-        ws_test_suites.append(TestKlayNamespaceBlockWS.suite())
-        rpc_test_suites.append(TestKlayNamespaceConfigurationRPC.suite())
-        ws_test_suites.append(TestKlayNamespaceConfigurationWS.suite())
-        rpc_test_suites.append(TestKlayNamespaceMiscellaneousRPC.suite())
-        ws_test_suites.append(TestKlayNamespaceMiscellaneousWS.suite())
-        rpc_test_suites.append(TestKlayNamespaceTransactionRPC.suite())
-        ws_test_suites.append(TestKlayNamespaceTransactionWS.suite())
-        rpc_test_suites.append(TestKlayNamespaceFilterRPC.suite())
-        ws_test_suites.append(TestKlayNamespaceFilterWS.suite())
-        rpc_test_suites.append(TestKlayNamespaceGasRPC.suite())
-        ws_test_suites.append(TestKlayNamespaceGasWS.suite())
+    if "kaia" in namespaces:
+        rpc_test_suites.append(TestKaiaNamespaceAccountRPC.suite())
+        ws_test_suites.append(TestKaiaNamespaceAccountWS.suite())
+        rpc_test_suites.append(TestKaiaNamespaceBlockRPC.suite())
+        ws_test_suites.append(TestKaiaNamespaceBlockWS.suite())
+        rpc_test_suites.append(TestKaiaNamespaceConfigurationRPC.suite())
+        ws_test_suites.append(TestKaiaNamespaceConfigurationWS.suite())
+        rpc_test_suites.append(TestKaiaNamespaceMiscellaneousRPC.suite())
+        ws_test_suites.append(TestKaiaNamespaceMiscellaneousWS.suite())
+        rpc_test_suites.append(TestKaiaNamespaceTransactionRPC.suite())
+        ws_test_suites.append(TestKaiaNamespaceTransactionWS.suite())
+        rpc_test_suites.append(TestKaiaNamespaceFilterRPC.suite())
+        ws_test_suites.append(TestKaiaNamespaceFilterWS.suite())
+        rpc_test_suites.append(TestKaiaNamespaceGasRPC.suite())
+        ws_test_suites.append(TestKaiaNamespaceGasWS.suite())
 
     if "eth" in namespaces:
         rpc_test_suites.append(TestEthNamespaceAccountRPC.suite())
@@ -802,8 +802,8 @@ if __name__ == "__main__":
     initialize()
     runner = HTMLTestRunner(
         output="testReport",
-        report_title="KlaytnTestReport",
-        report_name="KlaytnTestReport",
+        report_title="KaiaTestReport",
+        report_name="KaiaTestReport",
         combine_reports=True,
     )
 

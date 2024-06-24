@@ -88,53 +88,53 @@ cat eth/filter/eth_filter_rpc.py \
 | sed "s/result, error = Utils.call_rpc/result, error = Utils.call_ws/g" \
 > eth/filter/eth_filter_ws.py
 
-cat klay/account/klay_account_rpc.py \
+cat kaia/account/kaia_account_rpc.py \
 | sed "s/NamespaceAccountRPC/NamespaceAccountWS/g" \
 | sed "s/WebSocket/RPC/g" \
 | sed "s/created_by_rpc/created_by_ws/g" \
 | sed "s/_, error = Utils.call_rpc/_, error = Utils.call_ws/g" \
 | sed "s/result, error = Utils.call_rpc/result, error = Utils.call_ws/g" \
-> klay/account/klay_account_ws.py
+> kaia/account/kaia_account_ws.py
 
-cat klay/block/klay_block_rpc.py \
+cat kaia/block/kaia_block_rpc.py \
 | sed "s/NamespaceBlockRPC/NamespaceBlockWS/g" \
 | sed "s/WebSocket/RPC/g" \
 | sed "s/created_by_rpc/created_by_ws/g" \
 | sed "s/_, error = Utils.call_rpc/_, error = Utils.call_ws/g" \
 | sed "s/result, error = Utils.call_rpc/result, error = Utils.call_ws/g" \
-> klay/block/klay_block_ws.py
+> kaia/block/kaia_block_ws.py
 
-cat klay/configuration/klay_configuration_rpc.py \
+cat kaia/configuration/kaia_configuration_rpc.py \
 | sed "s/NamespaceConfigurationRPC/NamespaceConfigurationWS/g" \
 | sed "s/WebSocket/RPC/g" \
 | sed "s/created_by_rpc/created_by_ws/g" \
 | sed "s/_, error = Utils.call_rpc/_, error = Utils.call_ws/g" \
 | sed "s/result, error = Utils.call_rpc/result, error = Utils.call_ws/g" \
-> klay/configuration/klay_configuration_ws.py
+> kaia/configuration/kaia_configuration_ws.py
 
-cat klay/miscellaneous/klay_miscellaneous_rpc.py \
+cat kaia/miscellaneous/kaia_miscellaneous_rpc.py \
 | sed "s/NamespaceMiscellaneousRPC/NamespaceMiscellaneousWS/g" \
 | sed "s/WebSocket/RPC/g" \
 | sed "s/created_by_rpc/created_by_ws/g" \
 | sed "s/_, error = Utils.call_rpc/_, error = Utils.call_ws/g" \
 | sed "s/result, error = Utils.call_rpc/result, error = Utils.call_ws/g" \
-> klay/miscellaneous/klay_miscellaneous_ws.py
+> kaia/miscellaneous/kaia_miscellaneous_ws.py
 
-cat klay/transaction/klay_transaction_rpc.py \
+cat kaia/transaction/kaia_transaction_rpc.py \
 | sed "s/NamespaceTransactionRPC/NamespaceTransactionWS/g" \
 | sed "s/WebSocket/RPC/g" \
 | sed "s/created_by_rpc/created_by_ws/g" \
 | sed "s/_, error = Utils.call_rpc/_, error = Utils.call_ws/g" \
 | sed "s/result, error = Utils.call_rpc/result, error = Utils.call_ws/g" \
-> klay/transaction/klay_transaction_ws.py
+> kaia/transaction/kaia_transaction_ws.py
 
-cat klay/filter/klay_filter_rpc.py \
+cat kaia/filter/kaia_filter_rpc.py \
 | sed "s/NamespaceFilterRPC/NamespaceFilterWS/g" \
 | sed "s/WebSocket/RPC/g" \
 | sed "s/created_by_rpc/created_by_ws/g" \
 | sed "s/_, error = Utils.call_rpc/_, error = Utils.call_ws/g" \
 | sed "s/result, error = Utils.call_rpc/result, error = Utils.call_ws/g" \
-> klay/filter/klay_filter_ws.py
+> kaia/filter/kaia_filter_ws.py
 
 cat eth/gas/eth_gas_rpc.py \
 | sed "s/NamespaceGasRPC/NamespaceGasWS/g" \
@@ -144,10 +144,10 @@ cat eth/gas/eth_gas_rpc.py \
 | sed "s/result, error = Utils.call_rpc/result, error = Utils.call_ws/g" \
 > eth/gas/eth_gas_ws.py
 
-cat klay/gas/klay_gas_rpc.py \
+cat kaia/gas/kaia_gas_rpc.py \
 | sed "s/NamespaceGasRPC/NamespaceGasWS/g" \
 | sed "s/WebSocket/RPC/g" \
 | sed "s/created_by_rpc/created_by_ws/g" \
 | sed "s/_, error = Utils.call_rpc/_, error = Utils.call_ws/g" \
 | sed "s/result, error = Utils.call_rpc/result, error = Utils.call_ws/g" \
-> klay/gas/klay_gas_ws.py
+> kaia/gas/kaia_gas_ws.py

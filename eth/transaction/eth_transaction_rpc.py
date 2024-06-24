@@ -669,7 +669,7 @@ class TestEthNamespaceTransactionRPC(unittest.TestCase):
         nonce, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-        method = "klay_chainID"
+        method = "kaia_chainID"
         params = []
         chainId, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
@@ -727,7 +727,7 @@ class TestEthNamespaceTransactionRPC(unittest.TestCase):
         nonce, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-        method = "klay_chainID"
+        method = "kaia_chainID"
         params = []
         chainId, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)

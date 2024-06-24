@@ -2,28 +2,28 @@ import unittest
 import random
 from unittest import result
 from utils import Utils
-from common import klay as klay_common
+from common import kaia as kaia_common
 
 # test_data_set is injected by rpc-tester/main.py
 global test_data_set
 
 
-class TestKlayNamespaceTransactionRPC(unittest.TestCase):
+class TestKaiaNamespaceTransactionRPC(unittest.TestCase):
     config = Utils.get_config()
     _, _, log_path = Utils.get_log_filename_with_path()
     endpoint = config.get("endpoint")
     rpc_port = config.get("rpcPort")
     ws_port = config.get("wsPort")
-    ns = "klay"
+    ns = "kaia"
     waiting_count = 2
 
-    def test_klay_sendTransaction_error_no_param1(self):
+    def test_kaia_sendTransaction_error_no_param1(self):
         method = f"{self.ns}_sendTransaction"
         params = None
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NoParams", error)
 
-    def test_klay_sendTransaction_error_no_param2(self):
+    def test_kaia_sendTransaction_error_no_param2(self):
         method = f"{self.ns}_sendTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -36,7 +36,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "ContractCreationWithoutData", error)
 
-    def test_klay_sendTransaction_error_no_param3(self):
+    def test_kaia_sendTransaction_error_no_param3(self):
         method = f"{self.ns}_sendTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -49,7 +49,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "ContractCreationWithoutData", error)
 
-    def test_klay_sendTransaction_error_no_param4(self):
+    def test_kaia_sendTransaction_error_no_param4(self):
         method = f"{self.ns}_sendTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -62,7 +62,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "UnknownAccount", error)
 
-    def test_klay_sendTransaction_success_no_param1(self):
+    def test_kaia_sendTransaction_success_no_param1(self):
         method = f"{self.ns}_sendTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -75,7 +75,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_sendTransaction_success_no_param2(self):
+    def test_kaia_sendTransaction_success_no_param2(self):
         method = f"{self.ns}_sendTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -88,7 +88,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_sendTransaction_success_no_param3(self):
+    def test_kaia_sendTransaction_success_no_param3(self):
         method = f"{self.ns}_sendTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -101,7 +101,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_sendTransaction_success_no_param4(self):
+    def test_kaia_sendTransaction_success_no_param4(self):
         method = f"{self.ns}_sendTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -114,7 +114,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_sendTransaction_success_no_param5(self):
+    def test_kaia_sendTransaction_success_no_param5(self):
         method = f"{self.ns}_sendTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -127,7 +127,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_sendTransaction_error_wrong_type_param1(self):
+    def test_kaia_sendTransaction_error_wrong_type_param1(self):
         method = f"{self.ns}_sendTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -148,7 +148,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NonstringToSendTxArgsFromAddress", error)
 
-    def test_klay_sendTransaction_error_wrong_type_param2(self):
+    def test_kaia_sendTransaction_error_wrong_type_param2(self):
         method = f"{self.ns}_sendTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -169,7 +169,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NonstringToSendTxArgsToAddress", error)
 
-    def test_klay_sendTransaction_error_wrong_type_param3(self):
+    def test_kaia_sendTransaction_error_wrong_type_param3(self):
         method = f"{self.ns}_sendTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -190,7 +190,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NonstringToSendTxArgsGasUint", error)
 
-    def test_klay_sendTransaction_error_wrong_type_param4(self):
+    def test_kaia_sendTransaction_error_wrong_type_param4(self):
         method = f"{self.ns}_sendTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -211,7 +211,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NonstringToSendTxArgsGaspriceBig", error)
 
-    def test_klay_sendTransaction_error_wrong_type_param5(self):
+    def test_kaia_sendTransaction_error_wrong_type_param5(self):
         method = f"{self.ns}_sendTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -232,7 +232,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NonstringToSendTxArgsValueBig", error)
 
-    def test_klay_sendTransaction_error_wrong_value_param1(self):
+    def test_kaia_sendTransaction_error_wrong_value_param1(self):
         method = f"{self.ns}_sendTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -253,7 +253,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0HexToSendTxArgsFromAddress", error)
 
-    def test_klay_sendTransaction_error_wrong_value_param2(self):
+    def test_kaia_sendTransaction_error_wrong_value_param2(self):
         method = f"{self.ns}_sendTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -274,7 +274,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0HexToSendTxArgsToAddress", error)
 
-    def test_klay_sendTransaction_error_wrong_value_param3(self):
+    def test_kaia_sendTransaction_error_wrong_value_param3(self):
         method = f"{self.ns}_sendTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -295,7 +295,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "GasTooLow", error)
 
-    def test_klay_sendTransaction_error_wrong_value_param4(self):
+    def test_kaia_sendTransaction_error_wrong_value_param4(self):
         method = f"{self.ns}_sendTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -316,7 +316,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "InvalidGasPrice", error)
 
-    def test_klay_sendTransaction_error_wrong_value_param5(self):
+    def test_kaia_sendTransaction_error_wrong_value_param5(self):
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
         txTo = test_data_set["account"]["sender"]["address"]
@@ -325,7 +325,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         txValue = hex(Utils.to_peb(1.5))
 
         params = [txFrom, "latest"]
-        result, error = Utils.call_rpc(self.endpoint, "klay_getBalance", params, self.log_path)
+        result, error = Utils.call_rpc(self.endpoint, "kaia_getBalance", params, self.log_path)
         self.assertIsNone(error)
 
         method = f"{self.ns}_sendTransaction"
@@ -341,7 +341,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "InsufficientFundsFrom", error)
 
-    def test_klay_sendTransaction_success(self):
+    def test_kaia_sendTransaction_success(self):
         method = f"{self.ns}_sendTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -362,13 +362,13 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_signTransaction_error_no_param1(self):
+    def test_kaia_signTransaction_error_no_param1(self):
         method = f"{self.ns}_signTransaction"
         params = []
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NoParams", error)
 
-    def test_klay_signTransaction_error_no_param2(self):
+    def test_kaia_signTransaction_error_no_param2(self):
         method = f"{self.ns}_signTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -386,7 +386,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "ContractCreationWithoutData", error)
 
-    def test_klay_signTransaction_error_no_param3(self):
+    def test_kaia_signTransaction_error_no_param3(self):
         method = f"{self.ns}_signTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -404,7 +404,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "UnknownAccount", error)
 
-    def test_klay_signTransaction_success_no_param(self):
+    def test_kaia_signTransaction_success_no_param(self):
         method = f"{self.ns}_signTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -417,7 +417,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_signTransaction_error_wrong_type_param1(self):
+    def test_kaia_signTransaction_error_wrong_type_param1(self):
         method = f"{self.ns}_getTransactionCount"
         tag = "latest"
         txFrom = test_data_set["account"]["sender"]["address"]
@@ -445,7 +445,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NonstringToSendTxArgsFromAddress", error)
 
-    def test_klay_signTransaction_error_wrong_type_param2(self):
+    def test_kaia_signTransaction_error_wrong_type_param2(self):
         method = f"{self.ns}_getTransactionCount"
         tag = "latest"
         txFrom = test_data_set["account"]["sender"]["address"]
@@ -473,7 +473,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NonstringToSendTxArgsToAddress", error)
 
-    def test_klay_signTransaction_error_wrong_type_param3(self):
+    def test_kaia_signTransaction_error_wrong_type_param3(self):
         method = f"{self.ns}_getTransactionCount"
         tag = "latest"
         txFrom = test_data_set["account"]["sender"]["address"]
@@ -501,7 +501,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0HexToSendTxArgsGasUint", error)
 
-    def test_klay_signTransaction_error_wrong_type_param4(self):
+    def test_kaia_signTransaction_error_wrong_type_param4(self):
         method = f"{self.ns}_getTransactionCount"
         tag = "latest"
         txFrom = test_data_set["account"]["sender"]["address"]
@@ -529,7 +529,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0HexToSendTxArgsGaspriceBig", error)
 
-    def test_klay_signTransaction_error_wrong_type_param5(self):
+    def test_kaia_signTransaction_error_wrong_type_param5(self):
         method = f"{self.ns}_getTransactionCount"
         tag = "latest"
         txFrom = test_data_set["account"]["sender"]["address"]
@@ -557,7 +557,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0HexToSendTxArgsValueBig", error)
 
-    def test_klay_signTransaction_error_wrong_type_param6(self):
+    def test_kaia_signTransaction_error_wrong_type_param6(self):
         method = f"{self.ns}_getTransactionCount"
         tag = "latest"
         txFrom = test_data_set["account"]["sender"]["address"]
@@ -585,7 +585,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0HexToSendTxArgsNonceUint", error)
 
-    def test_klay_signTransaction_error_wrong_value_param(self):
+    def test_kaia_signTransaction_error_wrong_value_param(self):
         method = f"{self.ns}_getTransactionCount"
         tag = "latest"
         txFrom = test_data_set["account"]["sender"]["address"]
@@ -615,7 +615,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "UndefinedTxType", error)
 
-    def test_klay_signTransaction_success(self):
+    def test_kaia_signTransaction_success(self):
         method = f"{self.ns}_getTransactionCount"
         tag = "latest"
         txFrom = test_data_set["account"]["sender"]["address"]
@@ -644,19 +644,19 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         self.assertIsNone(error)
         self.assertEqual(result["tx"]["gasPrice"], txGasPrice)
 
-    def test_klay_sendRawTransaction_error_no_param(self):
+    def test_kaia_sendRawTransaction_error_no_param(self):
         method = f"{self.ns}_sendRawTransaction"
         params = []
         result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NoParams", error)
 
-    def test_klay_sendRawTransaction_error_wrong_type_param(self):
+    def test_kaia_sendRawTransaction_error_wrong_type_param(self):
         method = f"{self.ns}_sendRawTransaction"
         params = ["abcd"]
         result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0HexToBytes", error)
 
-    def test_klay_sendRawTransaction_success(self):
+    def test_kaia_sendRawTransaction_success(self):
         Utils.waiting_count("Waiting for", 5, "seconds until writing a block.")
         method = f"{self.ns}_getTransactionCount"
         tag = "latest"
@@ -691,7 +691,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_sendRawTransaction_AccessList_error_wrong_prefix(self):
+    def test_kaia_sendRawTransaction_AccessList_error_wrong_prefix(self):
         method = f"{self.ns}_getTransactionCount"
         tag = "latest"
         txFrom = test_data_set["account"]["sender"]["address"]
@@ -747,7 +747,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
             self.assertIsNotNone(error)
             self.assertTrue("undefined tx type" in error["message"] or "rlp:" in error["message"])
 
-    def test_klay_sendRawTransaction_AccessList_success(self):
+    def test_kaia_sendRawTransaction_AccessList_success(self):
         Utils.waiting_count("Waiting for", 5, "seconds until writing a block.")
         method = f"{self.ns}_getTransactionCount"
         tag = "latest"
@@ -795,7 +795,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_createAccessList_success(self):
+    def test_kaia_createAccessList_success(self):
         method = f"{self.ns}_createAccessList"
         txFrom = test_data_set["account"]["sender"]["address"]
         txTo = test_data_set["contracts"]["unknown"]["address"][0]
@@ -809,7 +809,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         result, error = Utils.call_rpc(self.endpoint, method, [params], self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_sendRawTransaction_DynamicFee_error_wrong_prefix(self):
+    def test_kaia_sendRawTransaction_DynamicFee_error_wrong_prefix(self):
         method = f"{self.ns}_getTransactionCount"
         tag = "latest"
         txFrom = test_data_set["account"]["sender"]["address"]
@@ -866,7 +866,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
             self.assertIsNotNone(error)
             self.assertTrue("undefined tx type" in error["message"] or "rlp:" in error["message"])
 
-    def test_klay_sendRawTransaction_DynamicFee_success(self):
+    def test_kaia_sendRawTransaction_DynamicFee_success(self):
         Utils.waiting_count("Waiting for", 5, "seconds until writing a block.")
         method = f"{self.ns}_getTransactionCount"
         tag = "latest"
@@ -915,21 +915,21 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         txHash, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_getTransactionByBlockHashAndIndex_error_no_param(self):
+    def test_kaia_getTransactionByBlockHashAndIndex_error_no_param(self):
         method = f"{self.ns}_getTransactionByBlockHashAndIndex"
 
         params = []
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NoParams", error)
 
-    def test_klay_getTransactionByBlockHashAndIndex_error_wrong_type_param(self):
+    def test_kaia_getTransactionByBlockHashAndIndex_error_wrong_type_param(self):
         method = f"{self.ns}_getTransactionByBlockHashAndIndex"
 
         params = ["txhash", "0x0"]
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0HexToHash", error)
 
-    def test_klay_getTransactionByBlockHashAndIndex_error_wrong_value_param(self):
+    def test_kaia_getTransactionByBlockHashAndIndex_error_wrong_value_param(self):
         method = f"{self.ns}_getTransactionByBlockHashAndIndex"
 
         params = [
@@ -939,30 +939,30 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "BlockDoesNotExist", error)
 
-    def test_klay_getTransactionByBlockHashAndIndex_success(self):
+    def test_kaia_getTransactionByBlockHashAndIndex_success(self):
         method = f"{self.ns}_getTransactionByBlockHashAndIndex"
         txData = test_data_set["txData"]
         for tx in txData:
             params = [tx["result"]["blockHash"], tx["result"]["index"]]
             result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
             self.assertIsNone(error)
-            klay_common.checkGasPriceField(self, result)
+            kaia_common.checkGasPriceField(self, result)
 
-    def test_klay_getTransactionByBlockNumberAndIndex_error_no_param(self):
+    def test_kaia_getTransactionByBlockNumberAndIndex_error_no_param(self):
         method = f"{self.ns}_getTransactionByBlockNumberAndIndex"
 
         params = []
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NoParams", error)
 
-    def test_klay_getTransactionByBlockNumberAndIndex_error_wrong_value_param(self):
+    def test_kaia_getTransactionByBlockNumberAndIndex_error_wrong_value_param(self):
         method = f"{self.ns}_getTransactionByBlockNumberAndIndex"
 
         params = ["0xffffffff", "0x0"]
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "BlockNotExist", error)
 
-    def test_klay_getTransactionByBlockNumberAndIndex_success(self):
+    def test_kaia_getTransactionByBlockNumberAndIndex_success(self):
         method = f"{self.ns}_getTransactionByBlockNumberAndIndex"
 
         txData = test_data_set["txData"]
@@ -970,52 +970,52 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
             params = [tx["result"]["blockNumber"], tx["result"]["index"]]
             result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
             self.assertIsNone(error)
-            klay_common.checkGasPriceField(self, result)
+            kaia_common.checkGasPriceField(self, result)
 
-    def test_klay_getTransactionReceipt_error_no_param(self):
+    def test_kaia_getTransactionReceipt_error_no_param(self):
         method = f"{self.ns}_getTransactionReceipt"
         params = []
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NoParams", error)
 
-    def test_klay_getTransactionReceipt_error_wrong_type_param(self):
+    def test_kaia_getTransactionReceipt_error_wrong_type_param(self):
         method = f"{self.ns}_getTransactionReceipt"
         params = ["abcd"]
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0HexToHash", error)
 
-    def test_klay_getTransactionReceipt_success_wrong_value_param(self):
+    def test_kaia_getTransactionReceipt_success_wrong_value_param(self):
         method = f"{self.ns}_getTransactionReceipt"
         params = ["0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"]
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_getTransactionReceipt_success(self):
+    def test_kaia_getTransactionReceipt_success(self):
         method = f"{self.ns}_getTransactionReceipt"
         txData = test_data_set["txData"]
         for tx in txData:
             params = [tx["result"]["hash"]]
             result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
             self.assertIsNone(error)
-            klay_common.checkGasPriceField(self, result)
+            kaia_common.checkGasPriceField(self, result)
             self.assertIsNotNone(result["effectiveGasPrice"])
 
-    def test_klay_call_error_no_param1(self):
+    def test_kaia_call_error_no_param1(self):
         method = f"{self.ns}_call"
         params = []
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NoParams", error)
 
-    def test_klay_call_error_no_param2(self):
+    def test_kaia_call_error_no_param2(self):
         method = f"{self.ns}_call"
         contract = test_data_set["contracts"]["unknown"]["address"][0]
         params = [{"to": contract}, "latest"]
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "ExecutionReverted", error)
 
-    def test_klay_call_error_no_param3(self):
+    def test_kaia_call_error_no_param3(self):
         method = f"{self.ns}_call"
-        methodName = "klay_call"
+        methodName = "kaia_call"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
         code = test_data_set["contracts"]["unknown"]["input"]
@@ -1026,7 +1026,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "VMErrorOccurs", error)
 
-    def test_klay_call_error_wrong_type_param1(self):
+    def test_kaia_call_error_wrong_type_param1(self):
         method = f"{self.ns}_call"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1048,7 +1048,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NonstringToCallArgsFromAddress", error)
 
-    def test_klay_call_error_wrong_type_param2(self):
+    def test_kaia_call_error_wrong_type_param2(self):
         method = f"{self.ns}_call"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1070,7 +1070,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NonstringToCallArgsToAddress", error)
 
-    def test_klay_call_error_wrong_type_param3(self):
+    def test_kaia_call_error_wrong_type_param3(self):
         method = f"{self.ns}_call"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1092,7 +1092,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0HexToCallArgsGasUint64", error)
 
-    def test_klay_call_error_wrong_type_param4(self):
+    def test_kaia_call_error_wrong_type_param4(self):
         method = f"{self.ns}_call"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1114,7 +1114,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0HexToCallArgsGaspriceBig", error)
 
-    def test_klay_call_error_wrong_type_param5(self):
+    def test_kaia_call_error_wrong_type_param5(self):
         method = f"{self.ns}_call"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1136,7 +1136,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0HexToCallArgsValueBig", error)
 
-    def test_klay_call_error_wrong_type_param6(self):
+    def test_kaia_call_error_wrong_type_param6(self):
         method = f"{self.ns}_call"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1158,7 +1158,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NonstringToCallArgsDataBytes", error)
 
-    def test_klay_call_error_wrong_type_param7(self):
+    def test_kaia_call_error_wrong_type_param7(self):
         method = f"{self.ns}_call"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1180,7 +1180,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg1HexWithoutPrefix", error)
 
-    def test_klay_call_error_wrong_value_param1(self):
+    def test_kaia_call_error_wrong_value_param1(self):
         method = f"{self.ns}_call"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1202,7 +1202,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "ExecutionReverted", error)
 
-    def test_klay_call_error_evm_revert_message(self):
+    def test_kaia_call_error_evm_revert_message(self):
         method = f"{self.ns}_call"
         address = test_data_set["account"]["sender"]["address"]
         ownerContract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1215,7 +1215,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "ExecutionReverted", error)
 
-    def test_klay_call_error_insufficient_balance_feepayer(self):
+    def test_kaia_call_error_insufficient_balance_feepayer(self):
         method = f"{self.ns}_call"
         contract = test_data_set["contracts"]["unknown"]["address"][0]
         zeroBalanceAddr = "0x15318f21f3dee6b2c64d2a633cb8c1194877c882"
@@ -1234,7 +1234,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "InsufficientBalanceFeePayer", error)
 
-    def test_klay_call_error_intrinsic_gas(self):
+    def test_kaia_call_error_intrinsic_gas(self):
         method = f"{self.ns}_call"
         contract = test_data_set["contracts"]["unknown"]["address"][0]
         zeroBalanceAddr = "0x15318f21f3dee6b2c64d2a633cb8c1194877c882"
@@ -1253,7 +1253,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "GasTooLow", error)
 
-    def test_klay_call_success1(self):
+    def test_kaia_call_success1(self):
         method = f"{self.ns}_call"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1264,7 +1264,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_call_success2(self):
+    def test_kaia_call_success2(self):
         method = f"{self.ns}_call"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1275,7 +1275,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_call_success3(self):
+    def test_kaia_call_success3(self):
         method = f"{self.ns}_call"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1295,7 +1295,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_call_success4(self):
+    def test_kaia_call_success4(self):
         method = f"{self.ns}_call"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1317,7 +1317,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_call_success_state_override_balance_and_code(self):
+    def test_kaia_call_success_state_override_balance_and_code(self):
         method = f"{self.ns}_call"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1342,7 +1342,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_call_success_input_instead_data(self):
+    def test_kaia_call_success_input_instead_data(self):
         method = f"{self.ns}_call"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1353,7 +1353,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_estimateGas_error_no_param(self):
+    def test_kaia_estimateGas_error_no_param(self):
         method = f"{self.ns}_estimateGas"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1365,7 +1365,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NoParams", error)
 
-    def test_klay_estimateGas_error_wrong_type_param1(self):
+    def test_kaia_estimateGas_error_wrong_type_param1(self):
         method = f"{self.ns}_estimateGas"
         address = test_data_set["account"]["sender"]["address"]
         contract = "abcd"
@@ -1377,7 +1377,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0HexToCallArgsToAddress", error)
 
-    def test_klay_estimateGas_error_wrong_type_param2(self):
+    def test_kaia_estimateGas_error_wrong_type_param2(self):
         method = f"{self.ns}_estimateGas"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1389,7 +1389,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0StringToCallArgsDataBytes", error)
 
-    def test_klay_estimateGas_error_exceeds_allowance(self):
+    def test_kaia_estimateGas_error_exceeds_allowance(self):
         method = f"{self.ns}_estimateGas"
         zeroBalanceAddr = "0x15318f21f3dee6b2c64d2a633cb8c1194877c882"
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1410,7 +1410,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "GasRequiredExceedsAllowance", error)
 
-    def test_klay_estimateGas_error_evm_revert_message(self):
+    def test_kaia_estimateGas_error_evm_revert_message(self):
         method = f"{self.ns}_estimateGas"
         ownerContract = test_data_set["contracts"]["unknown"]["address"][0]
         notOwner = "0x15318f21f3dee6b2c64d2a633cb8c1194877c882"
@@ -1419,14 +1419,14 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "ExecutionReverted", error)
 
-    def test_klay_estimateGas_error_revert(self):
+    def test_kaia_estimateGas_error_revert(self):
         method = f"{self.ns}_estimateGas"
         contract = test_data_set["contracts"]["unknown"]["address"][0]
         params = [{"to": contract}]
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "ExecutionReverted", error)
 
-    def test_klay_estimateGas_success(self):
+    def test_kaia_estimateGas_success(self):
         method = f"{self.ns}_estimateGas"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1438,7 +1438,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_estimateGas_success_data_instead_input(self):
+    def test_kaia_estimateGas_success_data_instead_input(self):
         method = f"{self.ns}_estimateGas"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1450,7 +1450,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_estimateComputationCost_success(self):
+    def test_kaia_estimateComputationCost_success(self):
         method = f"{self.ns}_estimateComputationCost"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1472,7 +1472,7 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_estimateComputationCost_success_input_instead_data(self):
+    def test_kaia_estimateComputationCost_success_input_instead_data(self):
         method = f"{self.ns}_estimateComputationCost"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1494,25 +1494,25 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_getTransactionByHash_error_no_param(self):
+    def test_kaia_getTransactionByHash_error_no_param(self):
         method = f"{self.ns}_getTransactionByHash"
         params = []
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NoParams", error)
 
-    def test_klay_getTransactionByHash_error_wrong_type_param(self):
+    def test_kaia_getTransactionByHash_error_wrong_type_param(self):
         method = f"{self.ns}_getTransactionByHash"
         params = [1234]
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NonstringToHash", error)
 
-    def test_klay_getTransactionByHash_success_wrong_value_param(self):
+    def test_kaia_getTransactionByHash_success_wrong_value_param(self):
         method = f"{self.ns}_getTransactionByHash"
         params = ["0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"]
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_getTransactionByHash_success(self):
+    def test_kaia_getTransactionByHash_success(self):
         method = f"{self.ns}_getTransactionByHash"
         txData = test_data_set["txData"]
         for tx in txData:
@@ -1520,27 +1520,27 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
             result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
             self.assertIsNone(error)
             self.assertIsNotNone(result)
-            klay_common.checkGasPriceField(self, result)
+            kaia_common.checkGasPriceField(self, result)
 
-    def test_klay_getTransactionBySenderTxHash_error_no_param(self):
+    def test_kaia_getTransactionBySenderTxHash_error_no_param(self):
         method = f"{self.ns}_getTransactionBySenderTxHash"
         params = []
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NoParams", error)
 
-    def test_klay_getTransactionBySenderTxHash_error_wrong_type_param(self):
+    def test_kaia_getTransactionBySenderTxHash_error_wrong_type_param(self):
         method = f"{self.ns}_getTransactionBySenderTxHash"
         params = ["abcd"]
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0HexToHash", error)
 
-    def test_klay_getTransactionBySenderTxHash_success_wrong_value_param(self):
+    def test_kaia_getTransactionBySenderTxHash_success_wrong_value_param(self):
         method = f"{self.ns}_getTransactionBySenderTxHash"
         params = ["0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"]
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_getTransactionBySenderTxHash_success(self):
+    def test_kaia_getTransactionBySenderTxHash_success(self):
         method = f"{self.ns}_sendTransaction"
         txFrom = test_data_set["account"]["sender"]["address"]
         password = test_data_set["account"]["sender"]["password"]
@@ -1563,30 +1563,30 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
 
         Utils.waiting_count("Waiting for", 5, "seconds until writing a block.")
 
-        method = "klay_getTransactionBySenderTxHash"
+        method = "kaia_getTransactionBySenderTxHash"
         params = [txHash]
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_getTransactionReceiptBySenderTxHash_error_no_param(self):
+    def test_kaia_getTransactionReceiptBySenderTxHash_error_no_param(self):
         method = f"{self.ns}_getTransactionReceiptBySenderTxHash"
         params = []
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NoParams", error)
 
-    def test_klay_getTransactionReceiptBySenderTxHash_error_wrong_type_param(self):
+    def test_kaia_getTransactionReceiptBySenderTxHash_error_wrong_type_param(self):
         method = f"{self.ns}_getTransactionReceiptBySenderTxHash"
         params = ["txHash"]
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0HexToHash", error)
 
-    def test_klay_getTransactionReceiptBySenderTxHash_success_wrong_value_param(self):
+    def test_kaia_getTransactionReceiptBySenderTxHash_success_wrong_value_param(self):
         method = f"{self.ns}_getTransactionReceiptBySenderTxHash"
         params = ["0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"]
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-    def test_klay_getTransactionReceiptBySenderTxHash_success(self):
+    def test_kaia_getTransactionReceiptBySenderTxHash_success(self):
         method = "personal_sendTransaction"
         tag = "latest"
         txFrom = test_data_set["account"]["sender"]["address"]
@@ -1618,105 +1618,105 @@ class TestKlayNamespaceTransactionRPC(unittest.TestCase):
     @staticmethod
     def suite():
         suite = unittest.TestSuite()
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendTransaction_error_no_param1"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendTransaction_error_no_param2"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendTransaction_error_no_param3"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendTransaction_error_no_param4"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendTransaction_success_no_param1"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendTransaction_success_no_param2"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendTransaction_success_no_param3"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendTransaction_success_no_param4"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendTransaction_success_no_param5"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendTransaction_error_wrong_type_param1"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendTransaction_error_wrong_type_param2"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendTransaction_error_wrong_type_param3"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendTransaction_error_wrong_type_param4"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendTransaction_error_wrong_type_param5"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendTransaction_error_wrong_value_param1"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendTransaction_error_wrong_value_param2"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendTransaction_error_wrong_value_param3"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendTransaction_error_wrong_value_param4"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendTransaction_error_wrong_value_param5"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendTransaction_success"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendTransaction_error_no_param1"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendTransaction_error_no_param2"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendTransaction_error_no_param3"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendTransaction_error_no_param4"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendTransaction_success_no_param1"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendTransaction_success_no_param2"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendTransaction_success_no_param3"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendTransaction_success_no_param4"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendTransaction_success_no_param5"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendTransaction_error_wrong_type_param1"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendTransaction_error_wrong_type_param2"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendTransaction_error_wrong_type_param3"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendTransaction_error_wrong_type_param4"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendTransaction_error_wrong_type_param5"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendTransaction_error_wrong_value_param1"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendTransaction_error_wrong_value_param2"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendTransaction_error_wrong_value_param3"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendTransaction_error_wrong_value_param4"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendTransaction_error_wrong_value_param5"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendTransaction_success"))
 
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_signTransaction_error_no_param1"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_signTransaction_error_no_param2"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_signTransaction_error_no_param3"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_signTransaction_success_no_param"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_signTransaction_error_wrong_type_param1"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_signTransaction_error_wrong_type_param2"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_signTransaction_error_wrong_type_param3"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_signTransaction_error_wrong_type_param4"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_signTransaction_error_wrong_type_param5"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_signTransaction_error_wrong_type_param6"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_signTransaction_error_wrong_value_param"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_signTransaction_success"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendRawTransaction_error_no_param"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendRawTransaction_error_wrong_type_param"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendRawTransaction_success"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendRawTransaction_AccessList_error_wrong_prefix"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendRawTransaction_AccessList_success"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_createAccessList_success"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendRawTransaction_DynamicFee_error_wrong_prefix"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_sendRawTransaction_DynamicFee_success"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_getTransactionByBlockHashAndIndex_error_no_param"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_signTransaction_error_no_param1"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_signTransaction_error_no_param2"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_signTransaction_error_no_param3"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_signTransaction_success_no_param"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_signTransaction_error_wrong_type_param1"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_signTransaction_error_wrong_type_param2"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_signTransaction_error_wrong_type_param3"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_signTransaction_error_wrong_type_param4"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_signTransaction_error_wrong_type_param5"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_signTransaction_error_wrong_type_param6"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_signTransaction_error_wrong_value_param"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_signTransaction_success"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendRawTransaction_error_no_param"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendRawTransaction_error_wrong_type_param"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendRawTransaction_success"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendRawTransaction_AccessList_error_wrong_prefix"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendRawTransaction_AccessList_success"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_createAccessList_success"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendRawTransaction_DynamicFee_error_wrong_prefix"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendRawTransaction_DynamicFee_success"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionByBlockHashAndIndex_error_no_param"))
         suite.addTest(
-            TestKlayNamespaceTransactionRPC("test_klay_getTransactionByBlockHashAndIndex_error_wrong_type_param")
+            TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionByBlockHashAndIndex_error_wrong_type_param")
         )
         suite.addTest(
-            TestKlayNamespaceTransactionRPC("test_klay_getTransactionByBlockHashAndIndex_error_wrong_value_param")
+            TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionByBlockHashAndIndex_error_wrong_value_param")
         )
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_getTransactionByBlockHashAndIndex_success"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_getTransactionByBlockNumberAndIndex_error_no_param"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionByBlockHashAndIndex_success"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionByBlockNumberAndIndex_error_no_param"))
         suite.addTest(
-            TestKlayNamespaceTransactionRPC("test_klay_getTransactionByBlockNumberAndIndex_error_wrong_value_param")
+            TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionByBlockNumberAndIndex_error_wrong_value_param")
         )
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_getTransactionByBlockNumberAndIndex_success"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_getTransactionReceipt_error_no_param"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_getTransactionReceipt_error_wrong_type_param"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_getTransactionReceipt_success_wrong_value_param"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_getTransactionReceipt_success"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_call_error_no_param1"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_call_error_no_param2"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_call_error_no_param3"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_call_error_wrong_type_param1"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_call_error_wrong_type_param2"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_call_error_wrong_type_param3"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_call_error_wrong_type_param4"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_call_error_wrong_type_param5"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_call_error_wrong_type_param6"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_call_error_wrong_type_param7"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_call_error_wrong_value_param1"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_call_error_evm_revert_message"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_call_success1"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_call_success2"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_call_success3"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_call_success4"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_call_success_input_instead_data"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_estimateGas_error_no_param"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_estimateGas_error_wrong_type_param1"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_estimateGas_error_wrong_type_param2"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_estimateGas_error_evm_revert_message"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_estimateGas_success"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_estimateGas_success_data_instead_input"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_estimateComputationCost_success"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_estimateComputationCost_success_input_instead_data"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_getTransactionByHash_error_no_param"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_getTransactionByHash_error_wrong_type_param"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_getTransactionByHash_success_wrong_value_param"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_getTransactionByHash_success"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_getTransactionBySenderTxHash_error_no_param"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_getTransactionBySenderTxHash_error_wrong_type_param"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionByBlockNumberAndIndex_success"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionReceipt_error_no_param"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionReceipt_error_wrong_type_param"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionReceipt_success_wrong_value_param"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionReceipt_success"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_call_error_no_param1"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_call_error_no_param2"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_call_error_no_param3"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_call_error_wrong_type_param1"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_call_error_wrong_type_param2"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_call_error_wrong_type_param3"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_call_error_wrong_type_param4"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_call_error_wrong_type_param5"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_call_error_wrong_type_param6"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_call_error_wrong_type_param7"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_call_error_wrong_value_param1"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_call_error_evm_revert_message"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_call_success1"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_call_success2"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_call_success3"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_call_success4"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_call_success_input_instead_data"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateGas_error_no_param"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateGas_error_wrong_type_param1"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateGas_error_wrong_type_param2"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateGas_error_evm_revert_message"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateGas_success"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateGas_success_data_instead_input"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateComputationCost_success"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateComputationCost_success_input_instead_data"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionByHash_error_no_param"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionByHash_error_wrong_type_param"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionByHash_success_wrong_value_param"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionByHash_success"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionBySenderTxHash_error_no_param"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionBySenderTxHash_error_wrong_type_param"))
         suite.addTest(
-            TestKlayNamespaceTransactionRPC("test_klay_getTransactionBySenderTxHash_success_wrong_value_param")
+            TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionBySenderTxHash_success_wrong_value_param")
         )
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_getTransactionBySenderTxHash_success"))
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_getTransactionReceiptBySenderTxHash_error_no_param"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionBySenderTxHash_success"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionReceiptBySenderTxHash_error_no_param"))
         suite.addTest(
-            TestKlayNamespaceTransactionRPC("test_klay_getTransactionReceiptBySenderTxHash_error_wrong_type_param")
+            TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionReceiptBySenderTxHash_error_wrong_type_param")
         )
         suite.addTest(
-            TestKlayNamespaceTransactionRPC("test_klay_getTransactionReceiptBySenderTxHash_success_wrong_value_param")
+            TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionReceiptBySenderTxHash_success_wrong_value_param")
         )
-        suite.addTest(TestKlayNamespaceTransactionRPC("test_klay_getTransactionReceiptBySenderTxHash_success"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionReceiptBySenderTxHash_success"))
         return suite

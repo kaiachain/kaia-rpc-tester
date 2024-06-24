@@ -1,20 +1,13 @@
-[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/)
+# Kaia RPC-tester
 
-# NO LONGER MAINTAINED
-
-Since the launch of Kaia Blockchain this repository has been parked in favour of the new open-source projects in [Kaia's Github](https://github.com/kaiachain). Contributors have now moved there continuing with massive open-source contributions to our blockchain ecosystem. A big thank you to everyone who has contributed to this repository. For more information about Klaytn's chain merge with Finschia blockchain please refer to the launching of Kaia blockchain - [kaia.io](http://kaia.io/).
-
-
-# RPC-tester
-
-The tester checks basic operations of Klaytn RPC/WebSocket APIs.
+The tester checks basic operations of Kaia RPC/WebSocket APIs.
 
 # How to run
 ## Python Virtualenv
 > You can setup the project Environment as separate env from your globally installed python dev environemnt by using virtualenv.
 
 Please check below instructions after installing virtualenv :)
-- Create virtualenv for this project by using `$ virtualenv -p python3.6 venv`
+- Create virtualenv for this project by using `$ virtualenv -p python3.6 venv` or `$ python3 -m venv ./venv`
 - Activate virtualenv by using `source ./venv/bin/activate`
 - Install project dependency by using `$ pip install -r requirements.txt`
 - Install this repository as module to use relative path `$pip install -e .`
@@ -22,17 +15,17 @@ Please check below instructions after installing virtualenv :)
 All done :)
 
 ## Required
-- [1] Faucet Account: An account which has enough amount KLAY for the test.
+- [1] Faucet Account: An account which has enough amount KAIA for the test.
 ### For EN (to be tested)
 - Options 
-  1. --rpc --rpcapi admin,debug,klay,eth,miner,net,personal,rpc,txpool,web3 --rpcport 8551 --rpcaddr 0.0.0.0
-  2. --ws --wsapi admin,debug,klay,eth,miner,net,personal,rpc,txpool,web3 --wsport 8552 --wsaddr 0.0.0.0
+  1. --rpc --rpcapi admin,debug,kaia,eth,miner,net,personal,rpc,txpool,web3 --rpcport 8551 --rpcaddr 0.0.0.0
+  2. --ws --wsapi admin,debug,kaia,eth,miner,net,personal,rpc,txpool,web3 --wsport 8552 --wsaddr 0.0.0.0
   3. --sendertxhashindexing
   4. --vmdebug
   5. --txpool.allow-local-anchortx
 
 ```shell
---rpc --rpcapi admin,debug,klay,eth,miner,net,personal,rpc,txpool,web3 --rpcport 8551 --rpcaddr 0.0.0.0 --ws --wsapi admin,debug,klay,miner,net,personal,rpc,txpool,web3 --wsport 8552 --wsaddr 0.0.0.0 --sendertxhashindexing --vmdebug
+--rpc --rpcapi admin,debug,kaia,eth,miner,net,personal,rpc,txpool,web3 --rpcport 8551 --rpcaddr 0.0.0.0 --ws --wsapi admin,debug,kaia,miner,net,personal,rpc,txpool,web3 --wsport 8552 --wsaddr 0.0.0.0 --sendertxhashindexing --vmdebug
 ```
 
 - File 
@@ -42,7 +35,7 @@ All done :)
 
 ## Usage
 ### 0. Set config.json and run generate_ws_from_rpc.sh
-`config.json` - The information of EN and the faucet account and fee payer account (both account should have enough KLAY).
+`config.json` - The information of EN and the faucet account and fee payer account (both account should have enough KAIA).
 ```json
 {
     "endpoint": "localhost",
@@ -55,7 +48,7 @@ All done :)
     "feePayerPrivateKey": "752a08fd165dcc7f37f3e444cf485c5b2020e4096a2cfd02f823a8b8280baaab",
     "feePayerAddress": "0xf77e71cf745e14129a344bcfb7e28240a5351beb",
     "feePayerPassword": "2524",
-    "namespaces": "admin,debug,personal,txpool,eth,klay"
+    "namespaces": "admin,debug,personal,txpool,eth,kaia"
 }
 ```
 
@@ -92,7 +85,7 @@ If you want to run tests for specific protocol, you can do like below.
 │   └── admin_ws.py
 ├── block.rlp
 ├── common # This contains common functions which will be used by many test scripts commonly.
-│   ├── klay.py # functions can be used by multiple tests cases with klay namespace
+│   ├── kaia.py # functions can be used by multiple tests cases with kaia namespace
 │   ├── net.py # functions can be used by multiple tests cases with net namespace
 │   └── personal.py # functions can be used by multiple tests cases with personal namespace
 ├── config.json # config file used during tests.
@@ -124,25 +117,25 @@ If you want to run tests for specific protocol, you can do like below.
 │   │   ├── eth_transaction_rpc.py
 │   │   └── eth_transaction_ws.py
 ├── generate_ws_from_rpc.sh
-├── klay # This contains test scripts about `klay` namespace.
+├── kaia # This contains test scripts about `kaia` namespace.
 │   ├── account
-│   │   ├── klay_account_rpc.py
-│   │   └── klay_account_ws.py
+│   │   ├── kaia_account_rpc.py
+│   │   └── kaia_account_ws.py
 │   ├── block
-│   │   ├── klay_block_rpc.py
-│   │   └── klay_block_ws.py
+│   │   ├── kaia_block_rpc.py
+│   │   └── kaia_block_ws.py
 │   ├── configuration
-│   │   ├── klay_configuration_rpc.py
-│   │   └── klay_configuration_ws.py
+│   │   ├── kaia_configuration_rpc.py
+│   │   └── kaia_configuration_ws.py
 │   ├── filter
-│   │   ├── klay_filter_rpc.py
-│   │   └── klay_filter_ws.py
+│   │   ├── kaia_filter_rpc.py
+│   │   └── kaia_filter_ws.py
 │   ├── miscellaneous
-│   │   ├── klay_miscellaneous_rpc.py
-│   │   └── klay_miscellaneous_ws.py
+│   │   ├── kaia_miscellaneous_rpc.py
+│   │   └── kaia_miscellaneous_ws.py
 │   └── transaction
-│   │   ├── klay_transaction_rpc.py
-│   │   └── klay_transaction_ws.py
+│   │   ├── kaia_transaction_rpc.py
+│   │   └── kaia_transaction_ws.py
 ├── main.py # Run tests by executing main.py
 ├── net # This contains test scripts about `net` namespace.
 │   ├── net_rpc.py

@@ -110,7 +110,7 @@ def checkEthereumBlockOrHeaderFormat(self, actualReturn):
             self.assertEqual(immutable_fields.get(field), actualValue)
         elif field == "uncles":
             if actualValue is not None:
-                # Uncles must not be existed in actualReturn from Klaytn node.
+                # Uncles must not be existed in actualReturn from Kaia node.
                 self.assertTrue(len(actualValue) == 0)
         elif field == "transactions":
             if actualValue is not None:

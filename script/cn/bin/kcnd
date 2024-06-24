@@ -109,18 +109,18 @@ start() {
         fi
     fi
 
-    # Cypress network => NETWORK_ID is null && NETWORK = "cypress"
-    # Baobab network => NETWORK_ID is null && NETWORK = "baobab"
+    # Mainnet network => NETWORK_ID is null && NETWORK = "mainnet"
+    # Kairos network => NETWORK_ID is null && NETWORK = "kairos"
     # Else => private network
     if [[ -z $NETWORK_ID ]]; then
-        if [[ $NETWORK == "baobab" ]]; then
-            OPTIONS="$OPTIONS --baobab"
-        elif [[ $NETWORK == "cypress" ]]; then
-            OPTIONS="$OPTIONS --cypress"
+        if [[ $NETWORK == "kairos" ]]; then
+            OPTIONS="$OPTIONS --kairos"
+        elif [[ $NETWORK == "mainnet" ]]; then
+            OPTIONS="$OPTIONS --mainnet"
         else
             echo
             echo "[ERROR] network id is not specified and network is not available."
-            echo "Available network: baobab, cypress"
+            echo "Available network: kairos, mainnet"
             exit 1
         fi
     else
