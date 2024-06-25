@@ -140,7 +140,7 @@ class TestKaiaNamespaceMiscellaneousRPC(unittest.TestCase):
         sig = "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"
         params = [address, message, sig, "latest"]
         result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
-        Utils.check_error(self, "InvalidKaiaSignature", error)
+        Utils.check_error(self, "InvalidKlaytnSignature", error)
 
     def test_kaia_recoverFromMessage_success(self):
         method = f"{self.ns}_recoverFromMessage"
