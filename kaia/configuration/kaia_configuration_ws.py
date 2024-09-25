@@ -65,6 +65,50 @@ class TestKaiaNamespaceConfigurationWS(unittest.TestCase):
         _, error = Utils.call_ws(self.endpoint, method, [], self.log_path)
         self.assertIsNone(error)
 
+    # getChainConfig, getParams APIs override deprecated parameters depending on hardfork:
+    # see here https://github.com/kaiachain/kaia/pull/92
+    def test_kaia_getChainConfig_success_with_value_param(self):
+        method = f"{self.ns}_getChainConfig"
+        blockNum, _ = Utils.call_ws(self.endpoint, f"{self.ns}_blockNumber", [], self.log_path)
+        res, error = Utils.call_ws(self.endpoint, method, [blockNum], self.log_path)
+        if 'kaiaCompatibleBlock' in res and int(blockNum, 16) >= res['kaiaCompatibleBlock']:
+            self.assertEqual(1, res['governance']['reward']['stakingUpdateInterval'], 1)
+        if 'RandaoCompatibleBlock' in res and int(blockNum, 16) >= res['RandaoCompatibleBlock']:
+            self.assertEqual(1, res['governance']['reward']['proposerUpdateInterval'], 1)
+        if 'koreCompatibleBlock' in res and int(blockNum, 16) >= res['koreCompatibleBlock']:
+            self.assertEqual(False, res['governance']['reward']['useGiniCoeff'], False)
+
+    def test_kaia_getChainConfig_error_wrong_type_value(self):
+        method = f"{self.ns}_getChainConfig"
+        _, error = Utils.call_ws(self.endpoint, method, ["abcd"], self.log_path)
+        Utils.check_error(self, "arg0HexWithoutPrefix", error)
+
+    def test_kaia_getChainConfig_success_without_value_param(self):
+        method = f"{self.ns}_getChainConfig"
+        _, error = Utils.call_ws(self.endpoint, method, [], self.log_path)
+        self.assertIsNone(error)
+
+    def test_kaia_getParams_success_with_value_param(self):
+        method = f"{self.ns}_getParams"
+        blockNum, _ = Utils.call_ws(self.endpoint, f"{self.ns}_blockNumber", [], self.log_path)
+        res, error = Utils.call_ws(self.endpoint, method, [blockNum], self.log_path)
+        if 'kaiaCompatibleBlock' in res and int(blockNum, 16) >= res['kaiaCompatibleBlock']:
+            self.assertEqual(1, res['reward.stakingupdateinterval'], 1)
+        if 'RandaoCompatibleBlock' in res and int(blockNum, 16) >= res['RandaoCompatibleBlock']:
+            self.assertEqual(1, res['reward.proposerupdateinterval'], 1)
+        if 'koreCompatibleBlock' in res and int(blockNum, 16) >= res['koreCompatibleBlock']:
+            self.assertEqual(False, res['reward.useginicoeff'], False)
+
+    def test_kaia_getParams_error_wrong_type_value(self):
+        method = f"{self.ns}_getParams"
+        _, error = Utils.call_ws(self.endpoint, method, ["abcd"], self.log_path)
+        Utils.check_error(self, "arg0HexWithoutPrefix", error)
+
+    def test_kaia_getParams_success_without_value_param(self):
+        method = f"{self.ns}_getParams"
+        _, error = Utils.call_ws(self.endpoint, method, [], self.log_path)
+        self.assertIsNone(error)
+
     def test_kaia_chainId_success(self):
         method = f"{self.ns}_chainId"
         params = None
@@ -110,5 +154,11 @@ class TestKaiaNamespaceConfigurationWS(unittest.TestCase):
         suite.addTest(TestKaiaNamespaceConfigurationWS("test_kaia_chainId_success_wrong_value_param"))
         suite.addTest(TestKaiaNamespaceConfigurationWS("test_kaia_clientVersion_success_wrong_value_param"))
         suite.addTest(TestKaiaNamespaceConfigurationWS("test_kaia_clientVersion_success"))
+        suite.addTest(TestKaiaNamespaceConfigurationWS("test_kaia_getChainConfig_success_with_value_param"))
+        suite.addTest(TestKaiaNamespaceConfigurationWS("test_kaia_getChainConfig_error_wrong_type_value"))
+        suite.addTest(TestKaiaNamespaceConfigurationWS("test_kaia_getChainConfig_success_without_value_param"))
+        suite.addTest(TestKaiaNamespaceConfigurationWS("test_kaia_getParams_success_with_value_param"))
+        suite.addTest(TestKaiaNamespaceConfigurationWS("test_kaia_getParams_error_wrong_type_value"))
+        suite.addTest(TestKaiaNamespaceConfigurationWS("test_kaia_getParams_success_without_value_param"))
 
         return suite

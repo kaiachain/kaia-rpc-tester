@@ -247,6 +247,14 @@ class TestKaiaNamespaceAccountWS(unittest.TestCase):
         _, error = Utils.call_ws(self.endpoint, method, [], self.log_path)
         Utils.check_error(self, "arg0NoParams", error)
 
+    def test_kaia_getCode_error_wrong_tag(self):
+        method = f"{self.ns}_getCode"
+        tag = "latest2"
+        contract_address = test_data_set["contracts"]["unknown"]["address"][0]
+        params = [contract_address, tag]
+        _, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        Utils.check_error(self, "arg1HexWithoutPrefix", error)
+
     def test_kaia_getCode_error_wrong_type_param1(self):
         method = f"{self.ns}_getCode"
         tag = "latest"
@@ -364,6 +372,7 @@ class TestKaiaNamespaceAccountWS(unittest.TestCase):
         suite.addTest(TestKaiaNamespaceAccountWS("test_kaia_getTransactionCount_error_wrong_value_param"))
 
         suite.addTest(TestKaiaNamespaceAccountWS("test_kaia_getTransactionCount_success"))
+        suite.addTest(TestKaiaNamespaceAccountWS("test_kaia_getCode_error_wrong_tag"))
         suite.addTest(TestKaiaNamespaceAccountWS("test_kaia_getCode_error_no_param"))
         suite.addTest(TestKaiaNamespaceAccountWS("test_kaia_getCode_error_wrong_type_param1"))
         suite.addTest(TestKaiaNamespaceAccountWS("test_kaia_getCode_error_wrong_type_param2"))

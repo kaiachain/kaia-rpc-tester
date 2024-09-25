@@ -112,6 +112,14 @@ class TestEthNamespaceAccountWS(unittest.TestCase):
         _, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
+    def test_eth_getCode_error_wrong_tag(self):
+        method = f"{self.ns}_getCode"
+        tag = "latest2"
+        contract_address = test_data_set["contracts"]["unknown"]["address"][0]
+        params = [contract_address, tag]
+        _, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        Utils.check_error(self, "arg1HexWithoutPrefix", error)
+
     def test_eth_getCode_error_no_param(self):
         method = f"{self.ns}_getCode"
         _, error = Utils.call_ws(self.endpoint, method, [], self.log_path)
@@ -252,6 +260,7 @@ class TestEthNamespaceAccountWS(unittest.TestCase):
         suite.addTest(TestEthNamespaceAccountWS("test_eth_getTransactionCount_error_wrong_value_param"))
 
         suite.addTest(TestEthNamespaceAccountWS("test_eth_getTransactionCount_success"))
+        suite.addTest(TestEthNamespaceAccountWS("test_eth_getCode_error_wrong_tag"))
         suite.addTest(TestEthNamespaceAccountWS("test_eth_getCode_error_no_param"))
         suite.addTest(TestEthNamespaceAccountWS("test_eth_getCode_error_wrong_type_param1"))
         suite.addTest(TestEthNamespaceAccountWS("test_eth_getCode_error_wrong_type_param2"))

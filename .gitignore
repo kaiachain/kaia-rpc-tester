@@ -16,6 +16,8 @@ config.json
 reports/
 testReport/
 __pycache__
+.DS_Store
+block.rlp
 
 # Script
 script/cn/data/block.rlp
@@ -27,5 +29,6 @@ script/cn/data/klay/transactions.rlp
 script/cn/data/klay/chaindata
 script/cn/data/keystore/UTC--*
 script/cn/bin/kcn
+script/.DS_Store
 script/*.trace
 script/*.profile
