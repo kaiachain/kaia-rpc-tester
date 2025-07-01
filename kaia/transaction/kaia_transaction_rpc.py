@@ -914,6 +914,124 @@ class TestKaiaNamespaceTransactionRPC(unittest.TestCase):
         txHash, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
+    def test_kaia_sendRawTransaction_SetCode_error_wrong_prefix(self):
+        method = f"{self.ns}_getTransactionCount"
+        tag = "latest"
+        txFrom = test_data_set["account"]["sender"]["address"]
+
+        params = [txFrom, tag]
+        nonce, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        method = f"{self.ns}_chainId"
+        params = []
+        chainId, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        password = test_data_set["account"]["sender"]["password"]
+        txTo = test_data_set["account"]["sender"]["address"]
+        txGas = hex(60400)
+        txGasPrice = test_data_set["unitGasPrice"]
+        txValue = hex(2441)
+        authorizationList = [
+            {
+                "chainId": "0x0",
+                "address": "0x000000000000000000000000000000000000aaaa",
+                "nonce": "0x0",
+                "yParity": "0x1",
+                "r": "0x79eae4cbf85eae84eac1311d7384f4f3bca88078cde0dbf0203248b074b7c36d",
+                "s": "0x8ea1adf9dded4d8223bd6784a6bf711211b381f04a34e9bea39e3ea81213d32",
+            },
+        ]
+        transaction = {
+            "from": txFrom,
+            "to": txTo,
+            "gas": txGas,
+            "maxPriorityFeePerGas": txGasPrice,
+            "maxFeePerGas": txGasPrice,
+            "value": txValue,
+            "nonce": nonce,
+            "accessList": [],
+            "authorizationList": authorizationList,
+            "chainId": chainId,
+            "typeInt": 30724, # Type4
+        }
+
+        method = f"{self.ns}_signTransaction"
+        params = [transaction]
+        result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        rawData = result["raw"]
+        rawTxWithoutHexPrefix = rawData[6:]
+
+        testSize = 300
+        for i in range(0, testSize):
+            randomPrefix = hex(random.randint(81, 30720))
+            if len(randomPrefix) % 2 == 1:
+                randomPrefix = f"0x0{randomPrefix[2:]}"
+            rawTx = randomPrefix + rawTxWithoutHexPrefix
+            method = f"{self.ns}_sendRawTransaction"
+            params = [rawTx]
+            result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+            self.assertIsNotNone(error)
+            self.assertTrue("undefined tx type" in error["message"] or "rlp:" in error["message"])
+
+    def test_kaia_sendRawTransaction_SetCode_success(self):
+        Utils.waiting_count("Waiting for", 5, "seconds until writing a block.")
+        method = f"{self.ns}_getTransactionCount"
+        tag = "latest"
+        txFrom = test_data_set["account"]["sender"]["address"]
+
+        params = [txFrom, tag]
+        nonce, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        method = f"{self.ns}_chainId"
+        params = []
+        chainId, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        password = test_data_set["account"]["sender"]["password"]
+        txTo = test_data_set["account"]["sender"]["address"]
+        txGas = hex(60400)
+        txGasPrice = test_data_set["unitGasPrice"]
+        txValue = hex(2441)
+        authorizationList = [
+            {
+                "chainId": "0x0",
+                "address": "0x000000000000000000000000000000000000aaaa",
+                "nonce": "0x0",
+                "yParity": "0x1",
+                "r": "0x79eae4cbf85eae84eac1311d7384f4f3bca88078cde0dbf0203248b074b7c36d",
+                "s": "0x8ea1adf9dded4d8223bd6784a6bf711211b381f04a34e9bea39e3ea81213d32",
+            },
+        ]
+        transaction = {
+            "from": txFrom,
+            "to": txTo,
+            "gas": txGas,
+            "maxPriorityFeePerGas": txGasPrice,
+            "maxFeePerGas": txGasPrice,
+            "value": txValue,
+            "nonce": nonce,
+            "accessList": [],
+            "authorizationList": authorizationList,
+            "chainId": chainId,
+            "typeInt": 30724, # Type4
+        }
+
+        method = f"{self.ns}_signTransaction"
+        params = [transaction]
+        result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        rawData = result["raw"]
+        method = f"{self.ns}_sendRawTransaction"
+        params = [rawData]
+        txHash, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
     def test_kaia_getTransactionByBlockHashAndIndex_error_no_param(self):
         method = f"{self.ns}_getTransactionByBlockHashAndIndex"
 
@@ -1771,6 +1889,9 @@ class TestKaiaNamespaceTransactionRPC(unittest.TestCase):
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_createAccessList_success"))
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendRawTransaction_DynamicFee_error_wrong_prefix"))
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendRawTransaction_DynamicFee_success"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendRawTransaction_SetCode_error_wrong_prefix"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendRawTransaction_SetCode_success"))
+
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionByBlockHashAndIndex_error_no_param"))
         suite.addTest(
             TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionByBlockHashAndIndex_error_wrong_type_param")
