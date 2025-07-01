@@ -133,6 +133,18 @@ class TestKaiaNamespaceConfigurationRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, [], self.log_path)
         self.assertIsNone(error)
 
+    def test_kaia_isConsoleLogEnabled_success_wrong_value_param(self):
+        method = f"{self.ns}_isConsoleLogEnabled"
+        result, error = Utils.call_rpc(self.endpoint, method, ["abcd"], self.log_path)
+        self.assertIsNone(error)
+        self.assertEqual(result, False) # as default value
+
+    def test_kaia_isConsoleLogEnabled_success(self):
+        method = f"{self.ns}_isConsoleLogEnabled"
+        result, error = Utils.call_rpc(self.endpoint, method, [], self.log_path)
+        self.assertIsNone(error)
+        self.assertEqual(result, False) # as default value
+
     @staticmethod
     def suite():
         suite = unittest.TestSuite()
@@ -160,4 +172,6 @@ class TestKaiaNamespaceConfigurationRPC(unittest.TestCase):
         suite.addTest(TestKaiaNamespaceConfigurationRPC("test_kaia_getParams_success_with_value_param"))
         suite.addTest(TestKaiaNamespaceConfigurationRPC("test_kaia_getParams_error_wrong_type_value"))
         suite.addTest(TestKaiaNamespaceConfigurationRPC("test_kaia_getParams_success_without_value_param"))
+        suite.addTest(TestKaiaNamespaceConfigurationRPC("test_kaia_isConsoleLogEnabled_success_wrong_value_param"))
+        suite.addTest(TestKaiaNamespaceConfigurationRPC("test_kaia_isConsoleLogEnabled_success"))
         return suite
