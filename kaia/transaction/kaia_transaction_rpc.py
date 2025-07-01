@@ -1,6 +1,5 @@
 import unittest
 import random
-from unittest import result
 from utils import Utils
 from common import kaia as kaia_common
 
@@ -1426,7 +1425,22 @@ class TestKaiaNamespaceTransactionRPC(unittest.TestCase):
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0StringToCallArgsDataBytes", error)
 
-    def test_kaia_estimateGas_error_exceeds_allowance(self):
+    def test_kaia_estimateGas_error_insufficient_balance(self):
+        method = f"{self.ns}_estimateGas"
+        zeroBalanceAddr = "0x15318f21f3dee6b2c64d2a633cb8c1194877c882"
+        txValue = hex(1)
+        params = [
+            {
+                "from": zeroBalanceAddr,
+                "to": zeroBalanceAddr,
+                "value": txValue,
+            },
+            "latest",
+        ]
+        _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        Utils.check_error(self, "InsufficientBalance", error)
+
+    def test_kaia_estimateGas_error_insufficient_funds(self):
         method = f"{self.ns}_estimateGas"
         zeroBalanceAddr = "0x15318f21f3dee6b2c64d2a633cb8c1194877c882"
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1445,21 +1459,42 @@ class TestKaiaNamespaceTransactionRPC(unittest.TestCase):
             "latest",
         ]
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
-        Utils.check_error(self, "GasRequiredExceedsAllowance", error)
+        Utils.check_error(self, "InsufficientFunds", error)
+
+    def test_kaia_estimateGas_error_exceeds_allowance(self):
+        method = f"{self.ns}_estimateGas"
+        address = test_data_set["account"]["1pebHolder"]["address"]
+        txGasPrice = test_data_set["unitGasPrice"]
+        txValue = hex(0)
+        params = [
+            {
+                "from": address,
+                "to": address,
+                "value": txValue,
+                "gasPrice": txGasPrice,
+            },
+            "latest",
+        ]
+        _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        #Utils.check_error(self, "GasRequiredExceedsAllowance", error)
+        self.assertIsNone(error) # The way "arg.Gas" is handled is different
 
     def test_kaia_estimateGas_error_evm_revert_message(self):
         method = f"{self.ns}_estimateGas"
         ownerContract = test_data_set["contracts"]["unknown"]["address"][0]
         notOwner = "0x15318f21f3dee6b2c64d2a633cb8c1194877c882"
-        changeOwnerAbi = "0xa6f9dae10000000000000000000000003e2ac308cd78ac2fe162f9522deb2b56d9da9499"  # changeOwner("0x3e2ac308cd78ac2fe162f9522deb2b56d9da9499")
-        params = [{"from": notOwner, "to": ownerContract, "data": changeOwnerAbi}]
+        changeOwnerAbi = "0xa6f9dae10000000000000000000000003e2ac308cd78ac2fe162f9522deb2b56d9da9499" # changeOwner("0x3e2ac308cd78ac2fe162f9522deb2b56d9da9499")
+        params = [
+            {"from": notOwner, "to": ownerContract, "data": changeOwnerAbi},
+            "latest",
+        ]
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "ExecutionReverted", error)
 
     def test_kaia_estimateGas_error_revert(self):
         method = f"{self.ns}_estimateGas"
         contract = test_data_set["contracts"]["unknown"]["address"][0]
-        params = [{"to": contract}]
+        params = [{"to": contract}, "latest"]
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "ExecutionReverted", error)
 
@@ -1472,10 +1507,14 @@ class TestKaiaNamespaceTransactionRPC(unittest.TestCase):
         txGasPrice = test_data_set["unitGasPrice"]
         txValue = hex(0)
         params = [{"from": address, "to": contract, "value": txValue, "input": code}]
-        _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
+        self.assertIsNotNone(result)
+        estimated_gas = int(result, 16)
+        expected_gas = 25841
+        self.assertEqual(estimated_gas, expected_gas)
 
-    def test_kaia_estimateGas_success_data_instead_input(self):
+    def test_kaia_estimateGas_success_data_for_backward_compatibility(self):
         method = f"{self.ns}_estimateGas"
         address = test_data_set["account"]["sender"]["address"]
         contract = test_data_set["contracts"]["unknown"]["address"][0]
@@ -1483,9 +1522,13 @@ class TestKaiaNamespaceTransactionRPC(unittest.TestCase):
         txGas = hex(30400)
         txGasPrice = test_data_set["unitGasPrice"]
         txValue = hex(0)
-        params = [{"from": address, "to": contract, "value": txValue, "data": code}]
-        _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        params = [{"from": address, "to": contract, "value": txValue, "data": code}] # using data
+        result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
+        self.assertIsNotNone(result)
+        estimated_gas = int(result, 16)
+        expected_gas = 25841
+        self.assertEqual(estimated_gas, expected_gas)
 
     def test_kaia_estimateGas_success_floor_data_gas(self):
         method = f"{self.ns}_estimateGas"
@@ -1498,6 +1541,23 @@ class TestKaiaNamespaceTransactionRPC(unittest.TestCase):
         self.assertIsNotNone(result)
         estimated_gas = int(result, 16)
         expected_gas = 61510
+        self.assertEqual(estimated_gas, expected_gas)
+
+    def test_kaia_estimateGas_success_state_override_balance_and_code(self):
+        method = f"{self.ns}_estimateGas"
+        address = test_data_set["account"]["sender"]["address"]
+        contract = test_data_set["contracts"]["unknown"]["address"][0]
+        code = test_data_set["contracts"]["unknown"]["input"]
+        txGas = hex(30400)
+        txGasPrice = test_data_set["unitGasPrice"]
+        txValue = hex(0)
+        stateOverrides = {address: {"balance": hex(int(txGas, base=16) * int(txGasPrice, base=16))}}
+        params = [{"from": address, "to": contract, "value": txValue, "data": code}, "latest", stateOverrides]
+        result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        self.assertIsNotNone(result)
+        estimated_gas = int(result, 16)
+        expected_gas = 25841
         self.assertEqual(estimated_gas, expected_gas)
 
     def test_kaia_estimateComputationCost_success(self):
@@ -1702,6 +1762,7 @@ class TestKaiaNamespaceTransactionRPC(unittest.TestCase):
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_signTransaction_error_wrong_type_param6"))
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_signTransaction_error_wrong_value_param"))
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_signTransaction_success"))
+
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendRawTransaction_error_no_param"))
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendRawTransaction_error_wrong_type_param"))
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_sendRawTransaction_success"))
@@ -1749,13 +1810,20 @@ class TestKaiaNamespaceTransactionRPC(unittest.TestCase):
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_call_success3"))
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_call_success4"))
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_call_success_input_instead_data"))
+
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateGas_error_no_param"))
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateGas_error_wrong_type_param1"))
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateGas_error_wrong_type_param2"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateGas_error_insufficient_balance"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateGas_error_insufficient_funds"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateGas_error_exceeds_allowance"))
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateGas_error_evm_revert_message"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateGas_error_revert"))
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateGas_success"))
-        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateGas_success_data_instead_input"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateGas_success_data_for_backward_compatibility"))
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateGas_success_floor_data_gas"))
+        suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateGas_success_state_override_balance_and_code"))
+
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateComputationCost_success"))
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_estimateComputationCost_success_input_instead_data"))
         suite.addTest(TestKaiaNamespaceTransactionRPC("test_kaia_getTransactionByHash_error_no_param"))

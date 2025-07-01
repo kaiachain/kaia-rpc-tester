@@ -1327,7 +1327,7 @@ class TestEthNamespaceTransactionRPC(unittest.TestCase):
         method = f"{self.ns}_estimateGas"
         ownerContract = test_data_set["contracts"]["unknown"]["address"][0]
         notOwner = "0x15318f21f3dee6b2c64d2a633cb8c1194877c882"
-        changeOwnerAbi = "0xa6f9dae10000000000000000000000003e2ac308cd78ac2fe162f9522deb2b56d9da9499"
+        changeOwnerAbi = "0xa6f9dae10000000000000000000000003e2ac308cd78ac2fe162f9522deb2b56d9da9499" # changeOwner("0x3e2ac308cd78ac2fe162f9522deb2b56d9da9499")
         params = [
             {"from": notOwner, "to": ownerContract, "data": changeOwnerAbi},
             "latest",
@@ -1350,9 +1350,29 @@ class TestEthNamespaceTransactionRPC(unittest.TestCase):
         txGas = hex(30400)
         txGasPrice = test_data_set["unitGasPrice"]
         txValue = hex(0)
-        params = [{"from": address, "to": contract, "value": txValue, "data": code}]
-        _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        params = [{"from": address, "to": contract, "value": txValue, "input": code}]
+        result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
+        self.assertIsNotNone(result)
+        estimated_gas = int(result, 16)
+        expected_gas = 25841
+        self.assertEqual(estimated_gas, expected_gas)
+
+    def test_eth_estimateGas_success_data_for_backward_compatibility(self):
+        method = f"{self.ns}_estimateGas"
+        address = test_data_set["account"]["sender"]["address"]
+        contract = test_data_set["contracts"]["unknown"]["address"][0]
+        code = test_data_set["contracts"]["unknown"]["input"]
+        txGas = hex(30400)
+        txGasPrice = test_data_set["unitGasPrice"]
+        txValue = hex(0)
+        params = [{"from": address, "to": contract, "value": txValue, "data": code}] # using data
+        result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        self.assertIsNotNone(result)
+        estimated_gas = int(result, 16)
+        expected_gas = 25841
+        self.assertEqual(estimated_gas, expected_gas)
 
     def test_eth_estimateGas_success_floor_data_gas(self):
         method = f"{self.ns}_estimateGas"
@@ -1365,6 +1385,23 @@ class TestEthNamespaceTransactionRPC(unittest.TestCase):
         self.assertIsNotNone(result)
         estimated_gas = int(result, 16)
         expected_gas = 61510
+        self.assertEqual(estimated_gas, expected_gas)
+
+    def test_eth_estimateGas_success_state_override_balance_and_code(self):
+        method = f"{self.ns}_estimateGas"
+        address = test_data_set["account"]["sender"]["address"]
+        contract = test_data_set["contracts"]["unknown"]["address"][0]
+        code = test_data_set["contracts"]["unknown"]["input"]
+        txGas = hex(30400)
+        txGasPrice = test_data_set["unitGasPrice"]
+        txValue = hex(0)
+        stateOverrides = {address: {"balance": hex(int(txGas, base=16) * int(txGasPrice, base=16))}}
+        params = [{"from": address, "to": contract, "value": txValue, "data": code}, "latest", stateOverrides]
+        result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        self.assertIsNotNone(result)
+        estimated_gas = int(result, 16)
+        expected_gas = 25841
         self.assertEqual(estimated_gas, expected_gas)
 
     def test_eth_estimateComputationCost_success(self):
@@ -1461,7 +1498,6 @@ class TestEthNamespaceTransactionRPC(unittest.TestCase):
     @staticmethod
     def suite():
         suite = unittest.TestSuite()
-
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_sendTransaction_error_no_param1"))
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_sendTransaction_error_no_param2"))
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_sendTransaction_error_no_param3"))
@@ -1482,6 +1518,7 @@ class TestEthNamespaceTransactionRPC(unittest.TestCase):
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_sendTransaction_error_wrong_value_param4"))
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_sendTransaction_error_wrong_value_param5"))
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_sendTransaction_success"))
+
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_signTransaction_error_no_param1"))
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_signTransaction_error_no_param2"))
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_signTransaction_error_no_param3"))
@@ -1493,6 +1530,7 @@ class TestEthNamespaceTransactionRPC(unittest.TestCase):
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_signTransaction_error_wrong_type_param5"))
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_signTransaction_error_wrong_type_param6"))
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_signTransaction_success"))
+
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_sendRawTransaction_error_no_param"))
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_sendRawTransaction_error_wrong_type_param"))
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_sendRawTransaction_success"))
@@ -1539,6 +1577,7 @@ class TestEthNamespaceTransactionRPC(unittest.TestCase):
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_call_success3"))
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_call_success4"))
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_call_success_state_override_balance_and_code"))
+
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_estimateGas_error_no_param"))
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_estimateGas_error_wrong_type_param1"))
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_estimateGas_error_wrong_type_param2"))
@@ -1548,7 +1587,10 @@ class TestEthNamespaceTransactionRPC(unittest.TestCase):
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_estimateGas_error_evm_revert_message"))
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_estimateGas_error_revert"))
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_estimateGas_success"))
+        suite.addTest(TestEthNamespaceTransactionRPC("test_eth_estimateGas_success_data_for_backward_compatibility"))
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_estimateGas_success_floor_data_gas"))
+        suite.addTest(TestEthNamespaceTransactionRPC("test_eth_estimateGas_success_state_override_balance_and_code"))
+
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_getTransactionByHash_error_no_param"))
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_getTransactionByHash_error_wrong_type_param"))
         suite.addTest(TestEthNamespaceTransactionRPC("test_eth_getTransactionByHash_success_wrong_value_param"))
