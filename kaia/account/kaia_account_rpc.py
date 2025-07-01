@@ -210,8 +210,9 @@ class TestKaiaNamespaceAccountRPC(unittest.TestCase):
         address = test_data_set["account"]["sender"]["address"]
         tag = "latest"
         params = [address, tag]
-        _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
+        self.assertFalse(result) # EOA
 
     def test_kaia_isContractAccount_success_eoa_with_code(self):
         method = f"{self.ns}_isContractAccount"
@@ -220,7 +221,7 @@ class TestKaiaNamespaceAccountRPC(unittest.TestCase):
         params = [address, tag]
         result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
-        self.assertTrue(result)
+        self.assertTrue(result) # EOA with code
 
     def test_kaia_getTransactionCount_error_no_param(self):
         method = f"{self.ns}_getTransactionCount"
