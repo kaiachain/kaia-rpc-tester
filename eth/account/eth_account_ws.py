@@ -244,15 +244,14 @@ class TestEthNamespaceAccountWS(unittest.TestCase):
     @staticmethod
     def suite():
         suite = unittest.TestSuite()
+
         suite.addTest(TestEthNamespaceAccountWS("test_eth_accounts_success_wrong_value_param"))
         suite.addTest(TestEthNamespaceAccountWS("test_eth_accounts_success"))
 
         suite.addTest(TestEthNamespaceAccountWS("test_eth_getBalance_error_no_param"))
-
         suite.addTest(TestEthNamespaceAccountWS("test_eth_getBalance_error_wrong_type_param1"))
         suite.addTest(TestEthNamespaceAccountWS("test_eth_getBalance_error_wrong_type_param2"))
         suite.addTest(TestEthNamespaceAccountWS("test_eth_getBalance_error_wrong_value_param"))
-
         suite.addTest(TestEthNamespaceAccountWS("test_eth_getBalance_success"))
 
         suite.addTest(TestEthNamespaceAccountWS("test_eth_getTransactionCount_error_no_param"))

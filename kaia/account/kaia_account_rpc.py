@@ -88,14 +88,18 @@ class TestKaiaNamespaceAccountRPC(unittest.TestCase):
     def test_kaia_getAccount_success(self):
         address = test_data_set["account"]["sender"]["address"]
         method = f"{self.ns}_getAccount"
-        _, error = Utils.call_rpc(self.endpoint, method, [address, "latest"], self.log_path)
+        result, error = Utils.call_rpc(self.endpoint, method, [address, "latest"], self.log_path)
         self.assertIsNone(error)
+        self.assertIsNotNone(result)
+        self.assertEqual(result["accType"], 1) # EOA
 
     def test_kaia_getAccount_success_eoa_with_code(self):
         address = test_data_set["account"]["eoaWithCode"]["address"]
         method = f"{self.ns}_getAccount"
         result, error = Utils.call_rpc(self.endpoint, method, [address, "latest"], self.log_path)
         self.assertIsNone(error)
+        self.assertIsNotNone(result)
+        self.assertEqual(result["accType"], 1) # EOA
         kaia_common.checkIfEoaFollowKIP228(self, result)
 
     def test_kaia_getAccountKey_error_no_param(self):
@@ -374,17 +378,17 @@ class TestKaiaNamespaceAccountRPC(unittest.TestCase):
         suite.addTest(TestKaiaNamespaceAccountRPC("test_kaia_getAccount_error_wrong_value_param1"))
         suite.addTest(TestKaiaNamespaceAccountRPC("test_kaia_getAccount_success"))
         suite.addTest(TestKaiaNamespaceAccountRPC("test_kaia_getAccount_success_eoa_with_code"))
+
         suite.addTest(TestKaiaNamespaceAccountRPC("test_kaia_getAccountKey_error_no_param"))
         suite.addTest(TestKaiaNamespaceAccountRPC("test_kaia_getAccountKey_error_wrong_type_param1"))
         suite.addTest(TestKaiaNamespaceAccountRPC("test_kaia_getAccountKey_error_wrong_type_param2"))
         suite.addTest(TestKaiaNamespaceAccountRPC("test_kaia_getAccountKey_error_wrong_value_param1"))
         suite.addTest(TestKaiaNamespaceAccountRPC("test_kaia_getAccountKey_success"))
-        suite.addTest(TestKaiaNamespaceAccountRPC("test_kaia_getBalance_error_no_param"))
 
+        suite.addTest(TestKaiaNamespaceAccountRPC("test_kaia_getBalance_error_no_param"))
         suite.addTest(TestKaiaNamespaceAccountRPC("test_kaia_getBalance_error_wrong_type_param1"))
         suite.addTest(TestKaiaNamespaceAccountRPC("test_kaia_getBalance_error_wrong_type_param2"))
         suite.addTest(TestKaiaNamespaceAccountRPC("test_kaia_getBalance_error_wrong_value_param"))
-
         suite.addTest(TestKaiaNamespaceAccountRPC("test_kaia_getBalance_success"))
 
         suite.addTest(TestKaiaNamespaceAccountRPC("test_kaia_isContractAccount_error_no_param"))
