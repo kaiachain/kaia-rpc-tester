@@ -834,6 +834,54 @@ class TestDebugNamespaceRPC(unittest.TestCase):
         # We need to implement this test case correctly.
         pass
 
+    def test_debug_isGaslessTx_success(self):
+        method = "kaia_getTransactionCount"
+        tag = "latest"
+        txFrom = test_data_set["account"]["sender"]["address"]
+        password = test_data_set["account"]["sender"]["password"]
+        txTo = test_data_set["account"]["sender"]["address"]
+        txGas = hex(30400)
+        txGasPrice = test_data_set["unitGasPrice"]
+        txValue = hex(2441406250)
+
+        params = [txFrom, tag]
+        nonce, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        method = "kaia_signTransaction"
+        params = [
+            {
+                "from": txFrom,
+                "to": txTo,
+                "gas": txGas,
+                "gasPrice": txGasPrice,
+                "value": txValue,
+                "nonce": nonce,
+            }
+        ]
+        result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        rawData = result["raw"]
+        method = f"{self.ns}_isGaslessTx"
+        params = [[rawData]]
+        result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        self.assertIsNotNone(result)
+        self.assertFalse(result["isGasless"])
+        self.assertEqual(result["reason"], "transaction is not a swap transaction")
+
+    def test_debug_gaslessInfo_success(self):
+        method = f"{self.ns}_gaslessInfo"
+        params = []
+        result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        self.assertIsNotNone(result)
+        self.assertFalse(result["isDisabled"])
+        self.assertEqual(result["swapRouter"], "0x0000000000000000000000000000000000000000")
+        self.assertEqual(result["allowedTokens"], [])
+        self.assertEqual(result["maxBundleTxs"], 100)
+
     @staticmethod
     def suite():
         suite = unittest.TestSuite()
@@ -965,5 +1013,7 @@ class TestDebugNamespaceRPC(unittest.TestCase):
         suite.addTest(TestDebugNamespaceRPC("test_debug_standardTraceBlockToFile_success"))
         suite.addTest(TestDebugNamespaceRPC("test_debug_traceBadBlock_success"))
         suite.addTest(TestDebugNamespaceRPC("test_debug_standardTraceBadBlockToFile_success"))
+        suite.addTest(TestDebugNamespaceRPC("test_debug_isGaslessTx_success"))
+        suite.addTest(TestDebugNamespaceRPC("test_debug_gaslessInfo_success"))
 
         return suite
