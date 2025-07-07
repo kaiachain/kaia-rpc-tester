@@ -617,12 +617,14 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
         params = []
         result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NoParams", error)
+        self.assertIsNone(result)
 
     def test_eth_sendRawTransaction_error_wrong_type_param(self):
         method = f"{self.ns}_sendRawTransaction"
         params = ["abcd"]
         result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0HexToBytes", error)
+        self.assertIsNone(result)
 
     def test_eth_sendRawTransaction_success(self):
         Utils.waiting_count("Waiting for", 5, "seconds until writing a block")
@@ -653,12 +655,13 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
         ]
         result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
-
         rawData = result["raw"]
+
         method = f"{self.ns}_sendRawTransaction"
         params = [rawData]
         result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
+        self.assertRegex(result, "^0x[0-9a-f]{64}$")
 
     def test_eth_sendRawTransaction_AccessList_error_wrong_prefix(self):
         method = f"{self.ns}_getTransactionCount"
@@ -669,7 +672,7 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
         nonce, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-        method = "kaia_chainID"
+        method = f"{self.ns}_chainId"
         params = []
         chainId, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
@@ -706,19 +709,21 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
 
         testSize = 300
         for i in range(0, testSize):
-            randomPrefix = hex(random.randint(3, 256))
+            # start=2: make bigger than TxTypeEthereumAccessList:0x7801 without "0x78" prefix
+            # end=256: make within 1 byte for excluding "0x78" prefix
+            randomPrefix = hex(random.randint(2, 256))
             if len(randomPrefix) % 2 == 1:
                 randomPrefix = f"0x0{randomPrefix[2:]}"
             rawTx = randomPrefix + rawTxWithoutHexPrefix
             method = f"{self.ns}_sendRawTransaction"
             params = [rawTx]
-            _, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+            result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
             self.assertIsNotNone(error)
-            self.assertTrue(
-                "undefined tx type" in error["message"] or "rlp:" in error["message"],
-            )
+            self.assertTrue("undefined tx type" in error["message"] or "rlp:" in error["message"])
+            self.assertIsNone(result)
 
-    def test_eth_sendRawTransaction_DynamicFee_error_wrong_prefix(self):
+    def test_eth_sendRawTransaction_AccessList_success(self):
+        Utils.waiting_count("Waiting for", 5, "seconds until writing a block")
         method = f"{self.ns}_getTransactionCount"
         tag = "latest"
         txFrom = test_data_set["account"]["sender"]["address"]
@@ -727,14 +732,14 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
         nonce, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-        method = "kaia_chainID"
+        method = f"{self.ns}_chainId"
         params = []
         chainId, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
         password = test_data_set["account"]["sender"]["password"]
         txTo = test_data_set["account"]["sender"]["address"]
-        txGas = hex(60400)
+        txGas = hex(30400)
         txGasPrice = test_data_set["unitGasPrice"]
         txValue = hex(2441)
         storageKeys = [
@@ -746,11 +751,54 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
             "from": txFrom,
             "to": txTo,
             "gas": txGas,
+            "gasPrice": txGasPrice,
+            "value": txValue,
+            "nonce": nonce,
+            "accessList": accessList,
+            "chainId": chainId,
+            "typeInt": 30721,
+        }
+
+        method = f"{self.ns}_signTransaction"
+        params = [transaction]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        rawData = result["raw"]
+
+        method = f"{self.ns}_sendRawTransaction"
+        params = [rawData]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        self.assertRegex(result, "^0x[0-9a-f]{64}$")
+
+    def test_eth_sendRawTransaction_DynamicFee_error_wrong_prefix(self):
+        method = f"{self.ns}_getTransactionCount"
+        tag = "latest"
+        txFrom = test_data_set["account"]["sender"]["address"]
+
+        params = [txFrom, tag]
+        nonce, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        method = f"{self.ns}_chainId"
+        params = []
+        chainId, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        password = test_data_set["account"]["sender"]["password"]
+        txTo = test_data_set["account"]["sender"]["address"]
+        txGas = hex(60400)
+        txGasPrice = test_data_set["unitGasPrice"]
+        txValue = hex(2441)
+        transaction = {
+            "from": txFrom,
+            "to": txTo,
+            "gas": txGas,
             "maxPriorityFeePerGas": txGasPrice,
             "maxFeePerGas": txGasPrice,
             "value": txValue,
             "nonce": nonce,
-            "accessList": accessList,
+            "accessList": [],
             "chainId": chainId,
             "typeInt": 30722,
         }
@@ -765,17 +813,63 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
 
         testSize = 300
         for i in range(0, testSize):
+            # start=3: make bigger than TxTypeEthereumDynamicFee:0x7802 without "0x78" prefix
+            # end=256: make within 1 byte for excluding "0x78" prefix
             randomPrefix = hex(random.randint(3, 256))
             if len(randomPrefix) % 2 == 1:
                 randomPrefix = f"0x0{randomPrefix[2:]}"
             rawTx = randomPrefix + rawTxWithoutHexPrefix
             method = f"{self.ns}_sendRawTransaction"
             params = [rawTx]
-            _, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+            result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
             self.assertIsNotNone(error)
-            self.assertTrue(
-                "undefined tx type" in error["message"] or "rlp:" in error["message"],
-            )
+            self.assertTrue("undefined tx type" in error["message"] or "rlp:" in error["message"])
+            self.assertIsNone(result)
+
+    def test_eth_sendRawTransaction_DynamicFee_success(self):
+        Utils.waiting_count("Waiting for", 5, "seconds until writing a block.")
+        method = f"{self.ns}_getTransactionCount"
+        tag = "latest"
+        txFrom = test_data_set["account"]["sender"]["address"]
+
+        params = [txFrom, tag]
+        nonce, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        method = f"{self.ns}_chainId"
+        params = []
+        chainId, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        password = test_data_set["account"]["sender"]["password"]
+        txTo = test_data_set["account"]["sender"]["address"]
+        txGas = hex(60400)
+        txGasPrice = test_data_set["unitGasPrice"]
+        txValue = hex(2441)
+        transaction = {
+            "from": txFrom,
+            "to": txTo,
+            "gas": txGas,
+            "maxPriorityFeePerGas": txGasPrice,
+            "maxFeePerGas": txGasPrice,
+            "value": txValue,
+            "nonce": nonce,
+            "accessList": [],
+            "chainId": chainId,
+            "typeInt": 30722,
+        }
+
+        method = f"{self.ns}_signTransaction"
+        params = [transaction]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        rawData = result["raw"]
+
+        method = f"{self.ns}_sendRawTransaction"
+        params = [rawData]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        self.assertRegex(result, "^0x[0-9a-f]{64}$")
 
     def test_eth_sendRawTransaction_SetCode_error_wrong_prefix(self):
         method = f"{self.ns}_getTransactionCount"
@@ -826,11 +920,13 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
         self.assertIsNone(error)
 
         rawData = result["raw"]
-        rawTxWithoutHexPrefix = rawData[6:]
+        rawTxWithoutHexPrefix = rawData[4:]
 
         testSize = 300
         for i in range(0, testSize):
-            randomPrefix = hex(random.randint(81, 30720))
+            # start=5: make bigger than TxTypeEthereumSetCode:0x7804 without "0x78" prefix
+            # end=256: make within 1 byte for excluding "0x78" prefix
+            randomPrefix = hex(random.randint(5, 256))
             if len(randomPrefix) % 2 == 1:
                 randomPrefix = f"0x0{randomPrefix[2:]}"
             rawTx = randomPrefix + rawTxWithoutHexPrefix
@@ -839,6 +935,7 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
             result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
             self.assertIsNotNone(error)
             self.assertTrue("undefined tx type" in error["message"] or "rlp:" in error["message"])
+            self.assertIsNone(result)
 
     def test_eth_sendRawTransaction_SetCode_success(self):
         Utils.waiting_count("Waiting for", 5, "seconds until writing a block.")
@@ -888,12 +985,13 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
         params = [transaction]
         result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
-
         rawData = result["raw"]
+
         method = f"{self.ns}_sendRawTransaction"
         params = [rawData]
-        txHash, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
+        self.assertRegex(result, "^0x[0-9a-f]{64}$")
 
     def test_eth_getTransactionByBlockHashAndIndex_error_no_param(self):
         method = f"{self.ns}_getTransactionByBlockHashAndIndex"

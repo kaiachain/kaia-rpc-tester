@@ -648,15 +648,18 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
         params = []
         result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0NoParams", error)
+        self.assertIsNone(result)
 
     def test_kaia_sendRawTransaction_error_wrong_type_param(self):
         method = f"{self.ns}_sendRawTransaction"
         params = ["abcd"]
         result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         Utils.check_error(self, "arg0HexToBytes", error)
+        self.assertIsNone(result)
 
     def test_kaia_sendRawTransaction_success(self):
         Utils.waiting_count("Waiting for", 5, "seconds until writing a block.")
+
         method = f"{self.ns}_getTransactionCount"
         tag = "latest"
         txFrom = test_data_set["account"]["sender"]["address"]
@@ -683,12 +686,13 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
         ]
         result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
-
         rawData = result["raw"]
+
         method = f"{self.ns}_sendRawTransaction"
         params = [rawData]
         result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
+        self.assertRegex(result, "^0x[0-9a-f]{64}$")
 
     def test_kaia_sendRawTransaction_AccessList_error_wrong_prefix(self):
         method = f"{self.ns}_getTransactionCount"
@@ -699,7 +703,7 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
         nonce, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-        method = f"{self.ns}_chainID"
+        method = f"{self.ns}_chainId"
         params = []
         chainId, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
@@ -736,6 +740,8 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
 
         testSize = 300
         for i in range(0, testSize):
+            # start=81: make bigger than TxTypeKaiaLast:80
+            # end=30720: make smaller than EthereumTxTypeEnvelope:"0x78"+"00"=0x7800
             randomPrefix = hex(random.randint(81, 30720))
             if len(randomPrefix) % 2 == 1:
                 randomPrefix = f"0x0{randomPrefix[2:]}"
@@ -745,6 +751,7 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
             result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
             self.assertIsNotNone(error)
             self.assertTrue("undefined tx type" in error["message"] or "rlp:" in error["message"])
+            self.assertIsNone(result)
 
     def test_kaia_sendRawTransaction_AccessList_success(self):
         Utils.waiting_count("Waiting for", 5, "seconds until writing a block.")
@@ -756,7 +763,7 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
         nonce, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-        method = f"{self.ns}_chainID"
+        method = f"{self.ns}_chainId"
         params = []
         chainId, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
@@ -787,12 +794,13 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
         params = [transaction]
         result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
+        rawData = result["raw"]
 
         method = f"{self.ns}_sendRawTransaction"
-        rawData = result["raw"]
         params = [rawData]
         result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
+        self.assertRegex(result, "^0x[0-9a-f]{64}$")
 
     def test_kaia_createAccessList_success(self):
         method = f"{self.ns}_createAccessList"
@@ -817,7 +825,7 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
         nonce, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-        method = f"{self.ns}_chainID"
+        method = f"{self.ns}_chainId"
         params = []
         chainId, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
@@ -827,11 +835,6 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
         txGas = hex(60400)
         txGasPrice = test_data_set["unitGasPrice"]
         txValue = hex(2441)
-        storageKeys = [
-            "0x0000000000000000000000000000000000000000000000000000000000000003",
-            "0x0000000000000000000000000000000000000000000000000000000000000007",
-        ]
-        accessList = [{"address": txFrom, "storageKeys": storageKeys}]
         transaction = {
             "from": txFrom,
             "to": txTo,
@@ -840,7 +843,7 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
             "maxFeePerGas": txGasPrice,
             "value": txValue,
             "nonce": nonce,
-            "accessList": accessList,
+            "accessList": [],
             "chainId": chainId,
             "typeInt": 30722,
         }
@@ -855,6 +858,8 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
 
         testSize = 300
         for i in range(0, testSize):
+            # start=81: make bigger than TxTypeKaiaLast:80
+            # end=30720: make smaller than EthereumTxTypeEnvelope:"0x78"+"00"=0x7800
             randomPrefix = hex(random.randint(81, 30720))
             if len(randomPrefix) % 2 == 1:
                 randomPrefix = f"0x0{randomPrefix[2:]}"
@@ -864,6 +869,7 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
             result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
             self.assertIsNotNone(error)
             self.assertTrue("undefined tx type" in error["message"] or "rlp:" in error["message"])
+            self.assertIsNone(result)
 
     def test_kaia_sendRawTransaction_DynamicFee_success(self):
         Utils.waiting_count("Waiting for", 5, "seconds until writing a block.")
@@ -875,7 +881,7 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
         nonce, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-        method = f"{self.ns}_chainID"
+        method = f"{self.ns}_chainId"
         params = []
         chainId, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
@@ -885,11 +891,6 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
         txGas = hex(60400)
         txGasPrice = test_data_set["unitGasPrice"]
         txValue = hex(2441)
-        storageKeys = [
-            "0x0000000000000000000000000000000000000000000000000000000000000003",
-            "0x0000000000000000000000000000000000000000000000000000000000000007",
-        ]
-        accessList = [{"address": txFrom, "storageKeys": storageKeys}]
         transaction = {
             "from": txFrom,
             "to": txTo,
@@ -898,7 +899,7 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
             "maxFeePerGas": txGasPrice,
             "value": txValue,
             "nonce": nonce,
-            "accessList": accessList,
+            "accessList": [],
             "chainId": chainId,
             "typeInt": 30722,
         }
@@ -907,12 +908,13 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
         params = [transaction]
         result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
-
         rawData = result["raw"]
+
         method = f"{self.ns}_sendRawTransaction"
         params = [rawData]
-        txHash, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
+        self.assertRegex(result, "^0x[0-9a-f]{64}$")
 
     def test_kaia_sendRawTransaction_SetCode_error_wrong_prefix(self):
         method = f"{self.ns}_getTransactionCount"
@@ -923,7 +925,7 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
         nonce, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-        method = f"{self.ns}_chainID"
+        method = f"{self.ns}_chainId"
         params = []
         chainId, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
@@ -967,6 +969,8 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
 
         testSize = 300
         for i in range(0, testSize):
+            # start=81: make bigger than TxTypeKaiaLast:80
+            # end=30720: make smaller than EthereumTxTypeEnvelope:"0x78"+"00"=0x7800
             randomPrefix = hex(random.randint(81, 30720))
             if len(randomPrefix) % 2 == 1:
                 randomPrefix = f"0x0{randomPrefix[2:]}"
@@ -976,6 +980,7 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
             result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
             self.assertIsNotNone(error)
             self.assertTrue("undefined tx type" in error["message"] or "rlp:" in error["message"])
+            self.assertIsNone(result)
 
     def test_kaia_sendRawTransaction_SetCode_success(self):
         Utils.waiting_count("Waiting for", 5, "seconds until writing a block.")
@@ -987,7 +992,7 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
         nonce, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
-        method = f"{self.ns}_chainID"
+        method = f"{self.ns}_chainId"
         params = []
         chainId, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
@@ -1025,12 +1030,13 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
         params = [transaction]
         result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
-
         rawData = result["raw"]
+
         method = f"{self.ns}_sendRawTransaction"
         params = [rawData]
-        txHash, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
+        self.assertRegex(result, "^0x[0-9a-f]{64}$")
 
     def test_kaia_getTransactionByBlockHashAndIndex_error_no_param(self):
         method = f"{self.ns}_getTransactionByBlockHashAndIndex"
@@ -1844,6 +1850,379 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
         _, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
 
+    def test_kaia_sendRawTransactions_error_no_param(self):
+        method = f"{self.ns}_sendRawTransactions"
+        params = []
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        Utils.check_error(self, "arg0NoParams", error)
+        self.assertIsNone(result)
+
+    def test_kaia_sendRawTransactions_error_wrong_type_param(self):
+        method = f"{self.ns}_sendRawTransactions"
+        params = [["abcd"]]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        Utils.check_error(self, "arg0HexToBytes", error)
+        self.assertIsNone(result)
+
+    def test_kaia_sendRawTransactions_success(self):
+        Utils.waiting_count("Waiting for", 5, "seconds until writing a block.")
+        method = f"{self.ns}_getTransactionCount"
+        tag = "latest"
+        txFrom = test_data_set["account"]["sender"]["address"]
+        password = test_data_set["account"]["sender"]["password"]
+        txTo = test_data_set["account"]["sender"]["address"]
+        txGas = hex(30400)
+        txGasPrice = test_data_set["unitGasPrice"]
+        txValue = hex(2441406250)
+
+        params = [txFrom, tag]
+        nonce, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        method = f"{self.ns}_signTransaction"
+        params = [
+            {
+                "from": txFrom,
+                "to": txTo,
+                "gas": txGas,
+                "gasPrice": txGasPrice,
+                "value": txValue,
+                "nonce": nonce,
+            }
+        ]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        rawData = result["raw"]
+
+        method = f"{self.ns}_sendRawTransactions"
+        params = [[rawData]]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        self.assertEqual(len(result), 1)
+        self.assertRegex(result[0], "^0x[0-9a-f]{64}$")
+
+    def test_kaia_sendRawTransactions_AccessList_error_kaia_signTransaction(self):
+        Utils.waiting_count("Waiting for", 5, "seconds until writing a block.")
+        method = f"{self.ns}_getTransactionCount"
+        tag = "latest"
+        txFrom = test_data_set["account"]["sender"]["address"]
+
+        params = [txFrom, tag]
+        nonce, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        method = f"{self.ns}_chainId"
+        params = []
+        chainId, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        password = test_data_set["account"]["sender"]["password"]
+        txTo = test_data_set["account"]["sender"]["address"]
+        txGas = hex(30400)
+        txGasPrice = test_data_set["unitGasPrice"]
+        txValue = hex(2441)
+        storageKeys = [
+            "0x0000000000000000000000000000000000000000000000000000000000000003",
+            "0x0000000000000000000000000000000000000000000000000000000000000007",
+        ]
+        accessList = [{"address": txFrom, "storageKeys": storageKeys}]
+        transaction = {
+            "from": txFrom,
+            "to": txTo,
+            "gas": txGas,
+            "gasPrice": txGasPrice,
+            "value": txValue,
+            "nonce": nonce,
+            "accessList": accessList,
+            "chainId": chainId,
+            "typeInt": 30721,
+        }
+
+        method = "kaia_signTransaction" # kaia_signTransaction is not supported
+        params = [transaction]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        rawData = result["raw"]
+
+        method = f"{self.ns}_sendRawTransactions"
+        params = [[rawData]]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNotNone(error)
+        self.assertTrue("undefined tx type" in error["message"])
+        self.assertIsNone(result)
+
+    def test_kaia_sendRawTransactions_AccessList_success_eth_signTransaction(self):
+        Utils.waiting_count("Waiting for", 5, "seconds until writing a block.")
+        method = f"{self.ns}_getTransactionCount"
+        tag = "latest"
+        txFrom = test_data_set["account"]["sender"]["address"]
+
+        params = [txFrom, tag]
+        nonce, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        method = f"{self.ns}_chainId"
+        params = []
+        chainId, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        password = test_data_set["account"]["sender"]["password"]
+        txTo = test_data_set["account"]["sender"]["address"]
+        txGas = hex(30400)
+        txGasPrice = test_data_set["unitGasPrice"]
+        txValue = hex(2441)
+        storageKeys = [
+            "0x0000000000000000000000000000000000000000000000000000000000000003",
+            "0x0000000000000000000000000000000000000000000000000000000000000007",
+        ]
+        accessList = [{"address": txFrom, "storageKeys": storageKeys}]
+        transaction = {
+            "from": txFrom,
+            "to": txTo,
+            "gas": txGas,
+            "gasPrice": txGasPrice,
+            "value": txValue,
+            "nonce": nonce,
+            "accessList": accessList,
+            "chainId": chainId,
+            "typeInt": 30721,
+        }
+
+        method = "eth_signTransaction" # eth_signTransaction is supported
+        params = [transaction]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        rawData = result["raw"]
+
+        method = f"{self.ns}_sendRawTransactions"
+        params = [[rawData]]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        self.assertEqual(len(result), 1)
+        self.assertRegex(result[0], "^0x[0-9a-f]{64}$")
+
+    def test_kaia_sendRawTransactions_DynamicFee_error_kaia_signTransaction(self):
+        Utils.waiting_count("Waiting for", 5, "seconds until writing a block.")
+        method = f"{self.ns}_getTransactionCount"
+        tag = "latest"
+        txFrom = test_data_set["account"]["sender"]["address"]
+
+        params = [txFrom, tag]
+        nonce, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        method = f"{self.ns}_chainId"
+        params = []
+        chainId, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        password = test_data_set["account"]["sender"]["password"]
+        txTo = test_data_set["account"]["sender"]["address"]
+        txGas = hex(60400)
+        txGasPrice = test_data_set["unitGasPrice"]
+        txValue = hex(2441)
+        transaction = {
+            "from": txFrom,
+            "to": txTo,
+            "gas": txGas,
+            "maxPriorityFeePerGas": txGasPrice,
+            "maxFeePerGas": txGasPrice,
+            "value": txValue,
+            "nonce": nonce,
+            "accessList": [],
+            "chainId": chainId,
+            "typeInt": 30722,
+        }
+
+        method = "kaia_signTransaction" # kaia_signTransaction is not supported
+        params = [transaction]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        rawData = result["raw"]
+
+        method = f"{self.ns}_sendRawTransactions"
+        params = [[rawData]]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNotNone(error)
+        self.assertTrue("undefined tx type" in error["message"])
+        self.assertIsNone(result)
+
+    def test_kaia_sendRawTransactions_DynamicFee_success_eth_signTransaction(self):
+        Utils.waiting_count("Waiting for", 5, "seconds until writing a block.")
+        method = f"{self.ns}_getTransactionCount"
+        tag = "latest"
+        txFrom = test_data_set["account"]["sender"]["address"]
+
+        params = [txFrom, tag]
+        nonce, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        method = f"{self.ns}_chainId"
+        params = []
+        chainId, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        password = test_data_set["account"]["sender"]["password"]
+        txTo = test_data_set["account"]["sender"]["address"]
+        txGas = hex(60400)
+        txGasPrice = test_data_set["unitGasPrice"]
+        txValue = hex(2441)
+        transaction = {
+            "from": txFrom,
+            "to": txTo,
+            "gas": txGas,
+            "maxPriorityFeePerGas": txGasPrice,
+            "maxFeePerGas": txGasPrice,
+            "value": txValue,
+            "nonce": nonce,
+            "accessList": [],
+            "chainId": chainId,
+            "typeInt": 30722,
+        }
+
+        method = "eth_signTransaction" # eth_signTransaction is supported
+        params = [transaction]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        rawData = result["raw"]
+        method = f"{self.ns}_sendRawTransactions"
+        params = [[rawData]]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        self.assertEqual(len(result), 1)
+        self.assertRegex(result[0], "^0x[0-9a-f]{64}$")
+
+    def test_kaia_sendRawTransactions_SetCode_error_kaia_signTransaction(self):
+        Utils.waiting_count("Waiting for", 5, "seconds until writing a block.")
+        method = f"{self.ns}_getTransactionCount"
+        tag = "latest"
+        txFrom = test_data_set["account"]["sender"]["address"]
+
+        params = [txFrom, tag]
+        nonce, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        method = f"{self.ns}_chainId"
+        params = []
+        chainId, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        password = test_data_set["account"]["sender"]["password"]
+        txTo = test_data_set["account"]["sender"]["address"]
+        txGas = hex(90600)
+        txGasPrice = test_data_set["unitGasPrice"]
+        txValue = hex(2441)
+        authorizationList = [
+            {
+                "chainId": "0x0",
+                "address": "0x000000000000000000000000000000000000aaaa",
+                "nonce": "0x0",
+                "yParity": "0x1",
+                "r": "0x79eae4cbf85eae84eac1311d7384f4f3bca88078cde0dbf0203248b074b7c36d",
+                "s": "0x8ea1adf9dded4d8223bd6784a6bf711211b381f04a34e9bea39e3ea81213d32",
+            },
+            {
+                "chainId": "0x0",
+                "address": "0x000000000000000000000000000000000000bbbb",
+                "nonce": "0x1",
+                "yParity": "0x1",
+                "r": "0x79eae4cbf85eae84eac1311d7384f4f3bca88078cde0dbf0203248b074b7c36d",
+                "s": "0x8ea1adf9dded4d8223bd6784a6bf711211b381f04a34e9bea39e3ea81213d32",
+            },
+        ]
+        transaction = {
+            "from": txFrom,
+            "to": txTo,
+            "gas": txGas,
+            "maxPriorityFeePerGas": txGasPrice,
+            "maxFeePerGas": txGasPrice,
+            "value": txValue,
+            "nonce": nonce,
+            "accessList": [],
+            "authorizationList": authorizationList,
+            "chainId": chainId,
+            "typeInt": 30724, # Type4
+        }
+
+        method = "kaia_signTransaction" # kaia_signTransaction is not supported
+        params = [transaction]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        rawData = result["raw"]
+        method = f"{self.ns}_sendRawTransactions"
+        params = [[rawData]]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNotNone(error)
+        self.assertTrue("undefined tx type" in error["message"])
+        self.assertIsNone(result)
+
+    def test_kaia_sendRawTransactions_SetCode_success_eth_signTransaction(self):
+        Utils.waiting_count("Waiting for", 5, "seconds until writing a block.")
+        method = f"{self.ns}_getTransactionCount"
+        tag = "latest"
+        txFrom = test_data_set["account"]["sender"]["address"]
+
+        params = [txFrom, tag]
+        nonce, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        method = f"{self.ns}_chainId"
+        params = []
+        chainId, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        password = test_data_set["account"]["sender"]["password"]
+        txTo = test_data_set["account"]["sender"]["address"]
+        txGas = hex(90600)
+        txGasPrice = test_data_set["unitGasPrice"]
+        txValue = hex(2441)
+        authorizationList = [
+            {
+                "chainId": "0x0",
+                "address": "0x000000000000000000000000000000000000aaaa",
+                "nonce": "0x0",
+                "yParity": "0x1",
+                "r": "0x79eae4cbf85eae84eac1311d7384f4f3bca88078cde0dbf0203248b074b7c36d",
+                "s": "0x8ea1adf9dded4d8223bd6784a6bf711211b381f04a34e9bea39e3ea81213d32",
+            },
+            {
+                "chainId": "0x0",
+                "address": "0x000000000000000000000000000000000000bbbb",
+                "nonce": "0x1",
+                "yParity": "0x1",
+                "r": "0x79eae4cbf85eae84eac1311d7384f4f3bca88078cde0dbf0203248b074b7c36d",
+                "s": "0x8ea1adf9dded4d8223bd6784a6bf711211b381f04a34e9bea39e3ea81213d32",
+            },
+        ]
+        transaction = {
+            "from": txFrom,
+            "to": txTo,
+            "gas": txGas,
+            "maxPriorityFeePerGas": txGasPrice,
+            "maxFeePerGas": txGasPrice,
+            "value": txValue,
+            "nonce": nonce,
+            "accessList": [],
+            "authorizationList": authorizationList,
+            "chainId": chainId,
+            "typeInt": 30724, # Type4
+        }
+
+        method = "eth_signTransaction" # eth_signTransaction is supported
+        params = [transaction]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+
+        rawData = result["raw"]
+        method = f"{self.ns}_sendRawTransactions"
+        params = [[rawData]]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        self.assertEqual(len(result), 1)
+        self.assertRegex(result[0], "^0x[0-9a-f]{64}$")
+
     @staticmethod
     def suite():
         suite = unittest.TestSuite()
@@ -1965,4 +2344,14 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
             TestKaiaNamespaceTransactionWS("test_kaia_getTransactionReceiptBySenderTxHash_success_wrong_value_param")
         )
         suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_getTransactionReceiptBySenderTxHash_success"))
+
+        suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_sendRawTransactions_error_no_param"))
+        suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_sendRawTransactions_error_wrong_type_param"))
+        suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_sendRawTransactions_success"))
+        suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_sendRawTransactions_AccessList_error_kaia_signTransaction"))
+        suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_sendRawTransactions_AccessList_success_eth_signTransaction"))
+        suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_sendRawTransactions_DynamicFee_error_kaia_signTransaction"))
+        suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_sendRawTransactions_DynamicFee_success_eth_signTransaction"))
+        suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_sendRawTransactions_SetCode_error_kaia_signTransaction"))
+        suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_sendRawTransactions_SetCode_success_eth_signTransaction"))
         return suite
