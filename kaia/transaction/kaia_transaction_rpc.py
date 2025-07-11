@@ -1600,8 +1600,7 @@ class TestKaiaNamespaceTransactionRPC(unittest.TestCase):
             "latest",
         ]
         _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
-        #Utils.check_error(self, "GasRequiredExceedsAllowance", error)
-        self.assertIsNone(error) # "arg.Gas" is handled differently
+        Utils.check_error(self, "GasRequiredExceedsAllowance", error)
 
     def test_kaia_estimateGas_error_evm_revert_message(self):
         method = f"{self.ns}_estimateGas"
