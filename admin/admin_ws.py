@@ -241,7 +241,7 @@ class TestAdminNamespaceWS(unittest.TestCase):
 
     def test_admin_stopWS_success_using_rpc(self):
         method = f"{self.ns}_stopWS"
-        result_from_rpc, error = Utils.call_ws(self.endpoint, method, None, self.log_path)
+        result_from_rpc, error = Utils.call_rpc(self.endpoint, method, None, self.log_path)
         self.assertTrue(result_from_rpc)
         self.assertIsNone(error)
 
@@ -250,14 +250,14 @@ class TestAdminNamespaceWS(unittest.TestCase):
     def test_admin_startWS_success_using_rpc(self):
         method = f"{self.ns}_startWS"
         params = self.create_params_for_starting_ws()
-        result_from_rpc, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        result_from_rpc, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertTrue(result_from_rpc)
         self.assertIsNone(error)
 
     def test_admin_stopWS_success_wrong_value_param_using_rpc(self):
         method = f"{self.ns}_stopWS"
         params = ["abcd"]
-        result_from_rpc, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        result_from_rpc, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertTrue(result_from_rpc)
         self.assertIsNone(error)
 
@@ -265,7 +265,7 @@ class TestAdminNamespaceWS(unittest.TestCase):
 
     def test_admin_stopWS_error_ws_not_running_using_rpc(self):
         method = f"{self.ns}_stopWS"
-        result_from_rpc, error = Utils.call_ws(self.endpoint, method, None, self.log_path)
+        result_from_rpc, error = Utils.call_rpc(self.endpoint, method, None, self.log_path)
         self.assertIsNone(result_from_rpc)
         Utils.check_error(self, "WSRPCNotRunning", error)
 
@@ -273,7 +273,7 @@ class TestAdminNamespaceWS(unittest.TestCase):
         method = f"{self.ns}_startWS"
         params = self.create_params_for_starting_ws()
         params[0] = "abcd"  # Invalid host
-        result_from_rpc, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        result_from_rpc, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(result_from_rpc)
         Utils.check_error(self, "NameResolutionFailure", error)
 
@@ -281,7 +281,7 @@ class TestAdminNamespaceWS(unittest.TestCase):
         method = f"{self.ns}_startWS"
         params = self.create_params_for_starting_ws()
         params[1] = "wsPort"  # Invalid port
-        result_from_rpc, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        result_from_rpc, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(result_from_rpc)
         Utils.check_error(self, "arg1StringToInt", error)
 
@@ -289,7 +289,7 @@ class TestAdminNamespaceWS(unittest.TestCase):
         method = f"{self.ns}_startWS"
         params = self.create_params_for_starting_ws()
         params[2] = 1234  # Invalid cors
-        result_from_rpc, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        result_from_rpc, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(result_from_rpc)
         Utils.check_error(self, "arg2NumberToString", error)
 
@@ -297,7 +297,7 @@ class TestAdminNamespaceWS(unittest.TestCase):
         method = f"{self.ns}_startWS"
         params = self.create_params_for_starting_ws()
         params[3] = 1234  # Invalid apis
-        result_from_rpc, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        result_from_rpc, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(result_from_rpc)
         Utils.check_error(self, "arg3NumberToString", error)
 
@@ -305,21 +305,21 @@ class TestAdminNamespaceWS(unittest.TestCase):
         method = f"{self.ns}_startWS"
         params = self.create_params_for_starting_ws()
         params[0] = "abcd"  # Invalid host
-        result_from_rpc, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        result_from_rpc, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(result_from_rpc)
         Utils.check_error(self, "NameResolutionFailure", error)
 
     def test_admin_startWS_success_no_param_using_rpc(self):
         method = f"{self.ns}_startWS"
         params = self.create_params_for_starting_ws()
-        result_from_rpc, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        result_from_rpc, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertTrue(result_from_rpc)
         self.assertIsNone(error)
 
     def test_admin_startWS_error_already_running_using_rpc(self):
         method = f"{self.ns}_startWS"
         params = self.create_params_for_starting_ws()
-        result_from_rpc, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        result_from_rpc, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
         self.assertIsNone(result_from_rpc)
         Utils.check_error(self, "WSAlreadyRunning", error)
 
