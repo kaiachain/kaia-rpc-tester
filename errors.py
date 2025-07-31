@@ -123,8 +123,10 @@ errors_json = """
     "RlpExceed": [-32000, "rlp: value size exceeds available input length"],
     "PendingLogsNotSupported": [-32000, "pending logs are not supported"],
     "NotificationsNotSupported": [-32000, "notifications not supported"],
-    "InvalidSubscriptionName": [-32602, "expected subscription name as first argument"]
-
+    "InvalidSubscriptionName": [-32602, "expected subscription name as first argument"],
+    "arg0InvalidBidParams": [-32602, "invalid argument 0: json: cannot unmarshal string into Go value of type impl.BidInput"],
+    "TooManyArguments": [-32602, "too many arguments, want at most 1"],
+    "arg1InvalidAddress": [-32602, "invalid argument 1: invalid address: invalid hex string"]
 }
 """
 
