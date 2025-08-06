@@ -1,6 +1,7 @@
 import unittest
 
 from utils import Utils
+import json
 
 # test_data_set is injected by rpc-tester/main.py
 global test_data_set
@@ -23,24 +24,129 @@ class TestKaiaNamespaceAuctionWS(unittest.TestCase):
 
     def test_auction_subscribe_newPendingTransactions_success_no_param(self):
         method = f"{self.ns}_subscribe"
-        result, error = Utils.call_ws(self.endpoint, method, [
+        result, error, ws = Utils.open_ws(self.endpoint, method, [
                                       "newPendingTransactions"], self.log_path)
-        self.assertIsNone(error)
-        self.assertIsNotNone(result)
+        try:
+            self.assertIsNone(error)
+            self.assertIsNotNone(result)
+            self.assertTrue(result.startswith("0x"))
+
+            Utils.waiting_count("Waiting for", 2, "seconds for pending transaction data.")
+
+            ws.settimeout(3)
+            try:
+                response = ws.recv()
+                self.assertIsNotNone(response)
+            except Exception as e:
+                self.assertTrue(result.startswith("0x"))
+                self.assertGreater(len(result), 2)
+                return
+
+            response_json = json.loads(response)
+            self.assertIn("jsonrpc", response_json)
+            self.assertIn("method", response_json)
+            self.assertIn("params", response_json)
+            self.assertEqual(response_json.get("jsonrpc"), "2.0")
+            self.assertEqual(response_json.get("method"), "auction_subscription")
+
+            params = response_json.get("params")
+            self.assertIsNotNone(params)
+            self.assertIn("subscription", params)
+            self.assertIn("result", params)
+            self.assertEqual(params.get("subscription"), result)
+
+            tx_hash = params.get("result")
+            self.assertIsNotNone(tx_hash)
+
+        finally:
+            ws.close()
 
     def test_auction_subscribe_newPendingTransactions_success_with_full_tx_true(self):
         method = f"{self.ns}_subscribe"
-        result, error = Utils.call_ws(self.endpoint, method, [
+        result, error, ws = Utils.open_ws(self.endpoint, method, [
                                       "newPendingTransactions", True], self.log_path)
-        self.assertIsNone(error)
-        self.assertIsNotNone(result)
+        try:
+            self.assertIsNone(error)
+            self.assertIsNotNone(result)
+            self.assertTrue(result.startswith("0x"))
+
+            Utils.waiting_count("Waiting for", 2, "seconds for pending transaction data.")
+
+            ws.settimeout(3)
+            try:
+                response = ws.recv()
+                self.assertIsNotNone(response)
+            except Exception as e:
+                self.assertTrue(result.startswith("0x"))
+                self.assertGreater(len(result), 2)
+                return
+
+            response_json = json.loads(response)
+            self.assertIn("jsonrpc", response_json)
+            self.assertIn("method", response_json)
+            self.assertIn("params", response_json)
+            self.assertEqual(response_json.get("jsonrpc"), "2.0")
+            self.assertEqual(response_json.get("method"), "auction_subscription")
+
+            params = response_json.get("params")
+            self.assertIsNotNone(params)
+            self.assertIn("subscription", params)
+            self.assertIn("result", params)
+            self.assertEqual(params.get("subscription"), result)
+
+            result_data = params.get("result")
+            self.assertIsNotNone(result_data)
+            self.assertIsInstance(result_data, dict)
+
+            required_fields = ["hash", "from", "to", "value", "gas", "gasPrice", "nonce"]
+            for field in required_fields:
+                if field in result_data:
+                    self.assertIsNotNone(result_data[field])
+
+            if "time" in result_data:
+                self.assertIsNotNone(result_data["time"])
+
+        finally:
+            ws.close()
 
     def test_auction_subscribe_newPendingTransactions_success_with_full_tx_false(self):
         method = f"{self.ns}_subscribe"
-        result, error = Utils.call_ws(self.endpoint, method, [
+        result, error, ws = Utils.open_ws(self.endpoint, method, [
                                       "newPendingTransactions", False], self.log_path)
-        self.assertIsNone(error)
-        self.assertIsNotNone(result)
+        try:
+            self.assertIsNone(error)
+            self.assertIsNotNone(result)
+            self.assertTrue(result.startswith("0x"))
+
+            Utils.waiting_count("Waiting for", 2, "seconds for pending transaction data.")
+
+            ws.settimeout(3)
+            try:
+                response = ws.recv()
+                self.assertIsNotNone(response)
+            except Exception as e:
+                self.assertTrue(result.startswith("0x"))
+                self.assertGreater(len(result), 2)
+                return
+
+            response_json = json.loads(response)
+            self.assertIn("jsonrpc", response_json)
+            self.assertIn("method", response_json)
+            self.assertIn("params", response_json)
+            self.assertEqual(response_json.get("jsonrpc"), "2.0")
+            self.assertEqual(response_json.get("method"), "auction_subscription")
+
+            params = response_json.get("params")
+            self.assertIsNotNone(params)
+            self.assertIn("subscription", params)
+            self.assertIn("result", params)
+            self.assertEqual(params.get("subscription"), result)
+
+            tx_hash = params.get("result")
+            self.assertIsNotNone(tx_hash)
+
+        finally:
+            ws.close()
 
     def test_auction_subscribe_newHeads_error_with_params(self):
         method = f"{self.ns}_subscribe"
@@ -50,10 +156,58 @@ class TestKaiaNamespaceAuctionWS(unittest.TestCase):
 
     def test_auction_subscribe_newHeads_success(self):
         method = f"{self.ns}_subscribe"
-        result, error = Utils.call_ws(self.endpoint, method, [
+        result, error, ws = Utils.open_ws(self.endpoint, method, [
                                       "newHeads"], self.log_path)
-        self.assertIsNone(error)
-        self.assertIsNotNone(result)
+        try:
+            self.assertIsNone(error)
+            self.assertIsNotNone(result)
+            self.assertTrue(result.startswith("0x"))
+
+            Utils.waiting_count("Waiting for", 2, "seconds for new block data.")
+
+            ws.settimeout(3)
+            try:
+                response = ws.recv()
+                self.assertIsNotNone(response)
+            except Exception as e:
+                self.assertTrue(result.startswith("0x"))
+                self.assertGreater(len(result), 2)
+                return
+
+            response_json = json.loads(response)
+            self.assertIn("jsonrpc", response_json)
+            self.assertIn("method", response_json)
+            self.assertIn("params", response_json)
+            self.assertEqual(response_json.get("jsonrpc"), "2.0")
+            self.assertEqual(response_json.get("method"), "auction_subscription")
+
+            params = response_json.get("params")
+            self.assertIsNotNone(params)
+            self.assertIn("subscription", params)
+            self.assertIn("result", params)
+            self.assertEqual(params.get("subscription"), result)
+
+            block_data = params.get("result")
+            self.assertIsNotNone(block_data)
+            self.assertIsInstance(block_data, dict)
+
+            required_fields = [
+                "number", "hash", "parentHash", "timestamp", "gasUsed",
+                "transactionsRoot", "receiptsRoot", "stateRoot", "logsBloom",
+                "extraData", "governanceData", "voteData", "reward", "blockScore"
+            ]
+
+            for field in required_fields:
+                self.assertIn(field, block_data, f"Missing required field: {field}")
+                self.assertIsNotNone(block_data[field])
+
+            optional_fields = ["baseFeePerGas", "size", "mixhash", "randomReveal", "timestampFoS"]
+            for field in optional_fields:
+                if field in block_data:
+                    self.assertIsNotNone(block_data[field])
+
+        finally:
+            ws.close()
 
     def test_auction_subscribe_logs_error_no_params(self):
         method = f"{self.ns}_subscribe"
@@ -101,10 +255,53 @@ class TestKaiaNamespaceAuctionWS(unittest.TestCase):
             "toBlock": "latest",
             "address": "0x0000000000000000000000000000000000000000"
         }
-        result, error = Utils.call_ws(self.endpoint, method, [
-                                      "logs", filter_criteria], self.log_path)
-        self.assertIsNone(error)
-        self.assertIsNotNone(result)
+
+        result, error, ws = Utils.open_ws(self.endpoint, method, ["logs", filter_criteria], self.log_path)
+        try:
+            self.assertIsNone(error)
+            self.assertIsNotNone(result)
+            self.assertTrue(result.startswith("0x"))
+
+            Utils.waiting_count("Waiting for", 2, "seconds for log data.")
+            ws.settimeout(3)
+
+            try:
+                response = ws.recv()
+                self.assertIsNotNone(response)
+            except Exception as e:
+                self.assertTrue(result.startswith("0x"))
+                self.assertGreater(len(result), 2)
+                return
+
+            response_json = json.loads(response)
+            self.assertIn("jsonrpc", response_json)
+            self.assertIn("method", response_json)
+            self.assertIn("params", response_json)
+            self.assertEqual(response_json.get("jsonrpc"), "2.0")
+            self.assertEqual(response_json.get("method"), "auction_subscription")
+
+            params = response_json.get("params")
+            self.assertIsNotNone(params)
+            self.assertIn("subscription", params)
+            self.assertIn("result", params)
+            self.assertEqual(params.get("subscription"), result)
+
+            log_result = params.get("result")
+            self.assertIsNotNone(log_result)
+            self.assertIsInstance(log_result, dict)
+
+            required_fields = ["address", "topics", "data", "blockNumber", "transactionHash"]
+            for field in required_fields:
+                self.assertIn(field, log_result, f"Missing required field: {field}")
+                self.assertIsNotNone(log_result[field])
+
+            optional_fields = ["transactionIndex", "blockHash", "logIndex", "removed"]
+            for field in optional_fields:
+                if field in log_result:
+                    self.assertIsNotNone(log_result[field])
+
+        finally:
+            ws.close()
 
     def test_auction_subscribe_logs_success_with_topics(self):
         method = f"{self.ns}_subscribe"
@@ -114,10 +311,53 @@ class TestKaiaNamespaceAuctionWS(unittest.TestCase):
             "address": "0x0000000000000000000000000000000000000000",
             "topics": ["0x0000000000000000000000000000000000000000000000000000000000000000"]
         }
-        result, error = Utils.call_ws(self.endpoint, method, [
-                                      "logs", filter_criteria], self.log_path)
-        self.assertIsNone(error)
-        self.assertIsNotNone(result)
+
+        result, error, ws = Utils.open_ws(self.endpoint, method, ["logs", filter_criteria], self.log_path)
+        try:
+            self.assertIsNone(error)
+            self.assertIsNotNone(result)
+            self.assertTrue(result.startswith("0x"))
+
+            Utils.waiting_count("Waiting for", 2, "seconds for log data.")
+            ws.settimeout(3)
+
+            try:
+                response = ws.recv()
+                self.assertIsNotNone(response)
+            except Exception as e:
+                self.assertTrue(result.startswith("0x"))
+                self.assertGreater(len(result), 2)
+                return
+
+            response_json = json.loads(response)
+            self.assertIn("jsonrpc", response_json)
+            self.assertIn("method", response_json)
+            self.assertIn("params", response_json)
+            self.assertEqual(response_json.get("jsonrpc"), "2.0")
+            self.assertEqual(response_json.get("method"), "auction_subscription")
+
+            params = response_json.get("params")
+            self.assertIsNotNone(params)
+            self.assertIn("subscription", params)
+            self.assertIn("result", params)
+            self.assertEqual(params.get("subscription"), result)
+
+            log_result = params.get("result")
+            self.assertIsNotNone(log_result)
+            self.assertIsInstance(log_result, dict)
+
+            required_fields = ["address", "topics", "data", "blockNumber", "transactionHash"]
+            for field in required_fields:
+                self.assertIn(field, log_result, f"Missing required field: {field}")
+                self.assertIsNotNone(log_result[field])
+
+            optional_fields = ["transactionIndex", "blockHash", "logIndex", "removed"]
+            for field in optional_fields:
+                if field in log_result:
+                    self.assertIsNotNone(log_result[field])
+
+        finally:
+            ws.close()
 
     @staticmethod
     def suite():
