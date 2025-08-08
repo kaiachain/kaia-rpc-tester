@@ -83,7 +83,10 @@ from kaia.gas import kaia_gas_rpc
 from kaia.gas import kaia_gas_ws
 from kaia.gas.kaia_gas_rpc import TestKaiaNamespaceGasRPC
 from kaia.gas.kaia_gas_ws import TestKaiaNamespaceGasWS
-
+from kaia.auction import kaia_auction_rpc
+from kaia.auction import kaia_auction_ws
+from kaia.auction.kaia_auction_rpc import TestKaiaNamespaceAuctionRPC
+from kaia.auction.kaia_auction_ws import TestKaiaNamespaceAuctionWS
 
 test_data_set = None
 config = None
@@ -760,6 +763,8 @@ def inject_test_data_to_testcases():
     eth_gas_ws.test_data_set = test_data_set
     kaia_gas_rpc.test_data_set = test_data_set
     kaia_gas_ws.test_data_set = test_data_set
+    kaia_auction_rpc.test_data_set = test_data_set
+    kaia_auction_ws.test_data_set = test_data_set
 
 
 def load_test_suites():
@@ -771,7 +776,7 @@ def load_test_suites():
     rpc_test_suites = list()
     ws_test_suites = list()
 
-    namespaces = config.get("namespaces", "admin,debug,eth,governance,kaia,net,personal,txpool")
+    namespaces = config.get("namespaces", "admin,debug,eth,governance,kaia,net,personal,txpool,auction")
     namespaces = namespaces.split(",")
 
     if "admin" in namespaces:
@@ -825,6 +830,10 @@ def load_test_suites():
         ws_test_suites.append(TestEthNamespaceFilterWS.suite())
         rpc_test_suites.append(TestEthNamespaceGasRPC.suite())
         ws_test_suites.append(TestEthNamespaceGasWS.suite())
+
+    if "auction" in namespaces:
+        rpc_test_suites.append(TestKaiaNamespaceAuctionRPC.suite())
+        ws_test_suites.append(TestKaiaNamespaceAuctionWS.suite())
 
 
 def initialize():
