@@ -357,7 +357,7 @@ class TestEthNamespaceFilterWS(unittest.TestCase):
             Utils.waiting_count("Waiting for", 5, "seconds until writing a block.")
 
             response = ws.recv()
-            Utils.check_response_type_newHeads_subscription(self, response)
+            Utils.check_response_type_newHeads_subscription_eth(self, response)
 
         finally:
             ws.close()

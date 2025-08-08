@@ -174,37 +174,8 @@ class TestKaiaNamespaceAuctionWS(unittest.TestCase):
                 self.assertGreater(len(result), 2)
                 return
 
-            response_json = json.loads(response)
-            self.assertIn("jsonrpc", response_json)
-            self.assertIn("method", response_json)
-            self.assertIn("params", response_json)
-            self.assertEqual(response_json.get("jsonrpc"), "2.0")
-            self.assertEqual(response_json.get("method"), "auction_subscription")
 
-            params = response_json.get("params")
-            self.assertIsNotNone(params)
-            self.assertIn("subscription", params)
-            self.assertIn("result", params)
-            self.assertEqual(params.get("subscription"), result)
-
-            block_data = params.get("result")
-            self.assertIsNotNone(block_data)
-            self.assertIsInstance(block_data, dict)
-
-            required_fields = [
-                "number", "hash", "parentHash", "timestamp", "gasUsed",
-                "transactionsRoot", "receiptsRoot", "stateRoot", "logsBloom",
-                "extraData", "governanceData", "voteData", "reward", "blockScore"
-            ]
-
-            for field in required_fields:
-                self.assertIn(field, block_data, f"Missing required field: {field}")
-                self.assertIsNotNone(block_data[field])
-
-            optional_fields = ["baseFeePerGas", "size", "mixhash", "randomReveal", "timestampFoS"]
-            for field in optional_fields:
-                if field in block_data:
-                    self.assertIsNotNone(block_data[field])
+            Utils.check_response_type_newHeads_subscription_kaia(self, response)
 
         finally:
             ws.close()
