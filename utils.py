@@ -400,14 +400,94 @@ class Utils(unittest.TestCase):
         target_instance.assertIn(expected_error_message, error.get("message"), error)
 
     @staticmethod
-    def check_response_type_newHeads_subscription(target_instance, response):
+    def check_response_type_newHeads_subscription_kaia(target_instance, response):
         """
-        Check whether given response is expected response or not.
-        target_instance must inherit unittest.TestCase class.
+        Verify newHeads subscription payload for Kaia header format (RPCMarshalHeader)
+        returned by kaia_subscribe and auction_subscribe.
         """
         response_json = json.loads(response)
-        params = response_json.get('params')
+        params = response_json.get("params")
         target_instance.assertIsNotNone(params)
-        target_instance.assertIsNotNone(params.get('subscription'))
-        result = params.get('result')
-        target_instance.assertIsNotNone(result.get('number'))
+        target_instance.assertIn("subscription", params)
+        target_instance.assertIn("result", params)
+
+        header = params.get("result")
+        target_instance.assertIsInstance(header, dict)
+
+        required_fields = [
+            "number",
+            "hash",
+            "parentHash",
+            "timestamp",
+            "timestampFoS",
+            "gasUsed",
+            "transactionsRoot",
+            "receiptsRoot",
+            "stateRoot",
+            "logsBloom",
+            "extraData",
+            "governanceData",
+            "voteData",
+            "reward",
+            "blockScore",
+        ]
+        for field in required_fields:
+            target_instance.assertIn(field, header, f"Missing required field: {field}")
+            target_instance.assertIsNotNone(header.get(field))
+
+        # Kaia header extras from RPCMarshalHeader; treat as optional
+        optional_fields = [
+            "baseFeePerGas",
+            "randomReveal",
+            "mixhash",
+        ]
+        for field in optional_fields:
+            if field in header:
+                target_instance.assertIsNotNone(header.get(field))
+
+    @staticmethod
+    def check_response_type_newHeads_subscription_eth(target_instance, response):
+        """
+        Verify newHeads subscription payload for Eth-compatible header format
+        (RpcMarshalEthHeader) returned by eth_subscribe.
+        """
+        response_json = json.loads(response)
+        params = response_json.get("params")
+        target_instance.assertIsNotNone(params)
+        target_instance.assertIn("subscription", params)
+        target_instance.assertIn("result", params)
+
+        header = params.get("result")
+        target_instance.assertIsInstance(header, dict)
+
+        required_fields = [
+            "number",
+            "hash",
+            "parentHash",
+            "nonce",
+            "mixHash",
+            "sha3Uncles",
+            "logsBloom",
+            "stateRoot",
+            "miner",
+            "difficulty",
+            "extraData",
+            "size",
+            "gasLimit",
+            "gasUsed",
+            "timestamp",
+            "transactionsRoot",
+            "receiptsRoot",
+        ]
+        for field in required_fields:
+            target_instance.assertIn(field, header, f"Missing required field: {field}")
+            target_instance.assertIsNotNone(header.get(field))
+
+        # Eth-compatible extras expected from RpcMarshalEthHeader; treat as optional
+        optional_fields = [
+            "baseFeePerGas",
+            "randomReveal",
+        ]
+        for field in optional_fields:
+            if field in header:
+                target_instance.assertIsNotNone(header.get(field))
