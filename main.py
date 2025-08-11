@@ -3,6 +3,10 @@ import json
 import argparse
 import types
 from functools import wraps
+# Fix for HtmlTestRunner compatibility
+import HtmlTestRunner.result as R
+if not hasattr(R.HtmlTestResult, "_count_relevant_tb_levels"):
+    R.HtmlTestResult._count_relevant_tb_levels = lambda self, tb: None
 from HtmlTestRunner import HTMLTestRunner
 from utils import Utils
 from common import personal as personal_common
