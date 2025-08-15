@@ -539,12 +539,3 @@ class Utils(unittest.TestCase):
             pass
 
         return Utils.parse_conf_value(conf_key) or ""
-            res, err = call(endpoint, "rpc_modules", [], log_path, port=port)
-            if err is None and isinstance(res, dict) and len(res) > 0:
-                return ",".join(sorted(res.keys()))
-            if err is not None:
-                return Utils.parse_conf_value(conf_key) or ""
-        except Exception:
-            return Utils.parse_conf_value(conf_key) or ""
-
-        return ""
