@@ -491,3 +491,51 @@ class Utils(unittest.TestCase):
         for field in optional_fields:
             if field in header:
                 target_instance.assertIsNotNone(header.get(field))
+
+    @staticmethod
+    def parse_conf_value(key: str, conf_path: str = "") -> str:
+        """
+        Read a value for the given key from kcnd.conf.
+        Falls back to the default test path if conf_path is not provided.
+        Returns an empty string if the key/path is not found.
+        """
+        try:
+            path = (
+                conf_path
+                if conf_path
+                else f"{PROJECT_ROOT_DIR}/script/cn/conf/kcnd.conf"
+            )
+            text = pathlib.Path(path).read_text()
+            m = re.search(rf'^{key}="?([^"\n#]+)"?', text, flags=re.M)
+            return "" if not m else m.group(1).strip()
+        except Exception:
+            return ""
+
+    @staticmethod
+    def snapshot_runtime_apis(
+        endpoint: str,
+        log_path: str,
+        transport: str,
+        port: int,
+        ) -> str:
+        """
+        Fetch current runtime modules via rpc_modules for the given transport and port.
+        - transport="rpc": query HTTP RPC only
+        - transport="ws": query WebSocket only
+        Returns CSV string of module names or empty string on failure.
+        """
+        t = transport.lower()
+        if t not in ("rpc", "ws"):
+            raise ValueError("transport must be 'rpc' or 'ws'")
+
+        call = Utils.call_rpc if t == "rpc" else Utils.call_ws
+        conf_key = "RPC_API" if t == "rpc" else "WS_API"
+
+        try:
+            res, err = call(endpoint, "rpc_modules", [], log_path, port=port)
+            if err is None and isinstance(res, dict) and len(res) > 0:
+                return ",".join(sorted(res.keys()))
+        except Exception:
+            pass
+
+        return Utils.parse_conf_value(conf_key) or ""
