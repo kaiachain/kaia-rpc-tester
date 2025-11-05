@@ -709,9 +709,9 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
 
         testSize = 300
         for i in range(0, testSize):
-            # start=2: make bigger than TxTypeEthereumAccessList:0x7801 without "0x78" prefix
+            # start=5: make bigger than TxTypeEthereumLast:0x7805 without "0x78" prefix
             # end=256: make within 1 byte for excluding "0x78" prefix
-            randomPrefix = hex(random.randint(2, 256))
+            randomPrefix = hex(random.randint(5, 256))
             if len(randomPrefix) % 2 == 1:
                 randomPrefix = f"0x0{randomPrefix[2:]}"
             rawTx = randomPrefix + rawTxWithoutHexPrefix
@@ -813,9 +813,9 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
 
         testSize = 300
         for i in range(0, testSize):
-            # start=3: make bigger than TxTypeEthereumDynamicFee:0x7802 without "0x78" prefix
+            # start=5: make bigger than TxTypeEthereumLast:0x7805 without "0x78" prefix
             # end=256: make within 1 byte for excluding "0x78" prefix
-            randomPrefix = hex(random.randint(3, 256))
+            randomPrefix = hex(random.randint(5, 256))
             if len(randomPrefix) % 2 == 1:
                 randomPrefix = f"0x0{randomPrefix[2:]}"
             rawTx = randomPrefix + rawTxWithoutHexPrefix
@@ -924,7 +924,7 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
 
         testSize = 300
         for i in range(0, testSize):
-            # start=5: make bigger than TxTypeEthereumSetCode:0x7804 without "0x78" prefix
+            # start=5: make bigger than TxTypeEthereumLast:0x7805 without "0x78" prefix
             # end=256: make within 1 byte for excluding "0x78" prefix
             randomPrefix = hex(random.randint(5, 256))
             if len(randomPrefix) % 2 == 1:
