@@ -3,6 +3,9 @@
 The tester checks basic operations of Kaia RPC/WebSocket APIs.
 
 ## How to Setup the Test
+
+*Note: If you use python3.13.x, the installation of requirements.txt will fail for wheel compatibility. Please use a different 3.x.*
+
 ### Install Python Libraries
 * Python3 should be installed: `python3`
 * Create virtual environment: `python3 -m venv venv`
