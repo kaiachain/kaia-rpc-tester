@@ -6,12 +6,12 @@ cn/bin/kcnd start
 echo "Waiting for cn/data/klay.ipc to be created..."
 TIMEOUT=30
 ELAPSED=0
-while [ ! -f cn/data/klay.ipc ] && [ $ELAPSED -lt $TIMEOUT ]; do
+while [ ! -S cn/data/klay.ipc ] && [ $ELAPSED -lt $TIMEOUT ]; do
     sleep 1
     ELAPSED=$((ELAPSED + 1))
 done
 
-if [ -f cn/data/klay.ipc ]; then
+if [ -S cn/data/klay.ipc ]; then
     echo "klay.ipc created successfully after ${ELAPSED} seconds"
 else
     echo "ERROR: klay.ipc was not created within ${TIMEOUT} seconds"
