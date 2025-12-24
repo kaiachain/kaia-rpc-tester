@@ -676,6 +676,60 @@ def makeTxData():
     test_data_set["txData"] = txs
 
 
+def makeBlobTxData():
+    global test_data_set
+    endpoint = config.get("endpoint")
+
+    # Generate signed raw blob transaction data
+    raw_data, nonce, chainId, _ = Utils.generate_blob_raw_transaction(
+        endpoint=endpoint,
+        test_data_set=test_data_set,
+        namespace="kaia"
+    )
+
+    if raw_data is None:
+        print("Warning: Failed to generate blob transaction raw data")
+        test_data_set["blobTxData"] = []
+        return
+
+    # Send raw transaction
+    method = "kaia_sendRawTransaction"
+    params = [raw_data]
+    result, error = Utils.call_rpc(endpoint, method, params, log_path)
+
+    if error is not None:
+        print(f"Warning: Failed to send blob transaction: {error}")
+        test_data_set["blobTxData"] = []
+        return
+
+    txHash = result
+
+    # Wait for transaction to be included in a block
+    Utils.waiting_count("Waiting for", 10, "seconds until blob transaction is included in a block.")
+
+    # Get transaction receipt
+    receipt, error = kaia_common.get_transaction_receipt(endpoint, [txHash])
+    if error is not None or receipt is None:
+        print(f"Warning: Failed to get blob transaction receipt: {error}")
+        test_data_set["blobTxData"] = []
+        return
+
+    # Store blob transaction data
+    blob_tx_data = {
+        "type": "TxTypeEthereumBlob",
+        "rawData": raw_data,
+        "result": {
+            "hash": txHash,
+            "blockHash": receipt["blockHash"],
+            "blockNumber": receipt["blockNumber"],
+            "index": receipt["transactionIndex"],
+            "status": receipt["status"],
+        }
+    }
+
+    test_data_set["blobTxData"] = [blob_tx_data]
+
+
 def prepare():
     """
     Prepare some pre-required jobs to do tests.
@@ -839,13 +893,13 @@ def load_test_suites():
         rpc_test_suites.append(TestKaiaNamespaceAuctionRPC.suite())
         ws_test_suites.append(TestKaiaNamespaceAuctionWS.suite())
 
-
 def initialize():
     global config
     config = Utils.get_config()
     load_test_data()
     prepare()
     makeTxData()
+    makeBlobTxData()
     inject_test_data_to_testcases()
     make_multisig_account()
     load_test_suites()
