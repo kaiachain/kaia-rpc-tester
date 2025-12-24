@@ -993,6 +993,22 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
         self.assertIsNone(error)
         self.assertRegex(result, "^0x[0-9a-f]{64}$")
 
+    def test_eth_sendRawTransaction_Blob_FromRawData_success(self):
+        rawData, nonce, chainId, _ = Utils.generate_blob_raw_transaction(
+            endpoint=self.endpoint,
+            test_data_set=test_data_set,
+            namespace=self.ns
+        )
+        self.assertIsNotNone(rawData)
+        self.assertIsNotNone(nonce)
+        self.assertIsNotNone(chainId)
+
+        method = f"{self.ns}_sendRawTransaction"
+        params = [rawData]
+        txHash, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        self.assertRegex(txHash, "^0x[0-9a-f]{64}$")
+
     def test_eth_getTransactionByBlockHashAndIndex_error_no_param(self):
         method = f"{self.ns}_getTransactionByBlockHashAndIndex"
 
@@ -1028,6 +1044,16 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
             params = [tx["result"]["blockHash"], tx["result"]["index"]]
             _, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
             self.assertIsNone(error)
+
+    def test_eth_getTransactionByBlockHashAndIndex_Blob_success(self):
+        method = f"{self.ns}_getTransactionByBlockHashAndIndex"
+        blobTxData = test_data_set.get("blobTxData", [])
+        for blobTx in blobTxData:
+            params = [blobTx["result"]["blockHash"], blobTx["result"]["index"]]
+            result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+            self.assertIsNone(error)
+            eth_common.checkGasPriceField(self, result)
+            eth_common.checkBlobField(self, result)
 
     def test_eth_getTransactionByBlockNumberAndIndex_error_no_param(self):
         method = f"{self.ns}_getTransactionByBlockNumberAndIndex"
@@ -1072,6 +1098,17 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
             _, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
             self.assertIsNone(error)
 
+    def test_eth_getRawTransactionByBlockNumberAndIndex_Blob_success(self):
+        method = f"{self.ns}_getRawTransactionByBlockNumberAndIndex"
+
+        blobTxData = test_data_set.get("blobTxData", [])
+        for blobTx in blobTxData:
+            params = [blobTx["result"]["blockNumber"], blobTx["result"]["index"]]
+            result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+            self.assertIsNone(error)
+            self.assertRegex(result, "^0x[0-9a-f]+$")
+            self.assertNotEqual(result, "0x")
+
     def test_eth_getRawTransactionByBlockNumberAndIndex_success_empty_slice_result(self):
         method = f"{self.ns}_getRawTransactionByBlockNumberAndIndex"
 
@@ -1108,6 +1145,18 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
             result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
             self.assertIsNone(error)
             self.assertIsNotNone(result["effectiveGasPrice"])
+
+    def test_eth_getTransactionReceipt_Blob_success(self):
+        method = f"{self.ns}_getTransactionReceipt"
+        blobTxData = test_data_set["blobTxData"]
+        for blobTx in blobTxData:
+            params = [blobTx["result"]["hash"]]
+            result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+            self.assertIsNone(error)
+            self.assertIsNotNone(result["effectiveGasPrice"])
+            self.assertEqual(result["type"], "0x3")
+            self.assertIsNotNone(result["blobGasUsed"])
+            self.assertIsNotNone(result["blobGasPrice"])
 
     def test_eth_call_error_no_param1(self):
         method = f"{self.ns}_call"
@@ -1754,6 +1803,7 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
         suite.addTest(TestEthNamespaceTransactionWS("test_eth_sendRawTransaction_DynamicFee_error_wrong_prefix"))
         suite.addTest(TestEthNamespaceTransactionWS("test_eth_sendRawTransaction_SetCode_error_wrong_prefix"))
         suite.addTest(TestEthNamespaceTransactionWS("test_eth_sendRawTransaction_SetCode_success"))
+        suite.addTest(TestEthNamespaceTransactionWS("test_eth_sendRawTransaction_Blob_FromRawData_success"))
 
         suite.addTest(TestEthNamespaceTransactionWS("test_eth_getTransactionByBlockHashAndIndex_error_no_param"))
         suite.addTest(
@@ -1763,6 +1813,7 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
             TestEthNamespaceTransactionWS("test_eth_getTransactionByBlockHashAndIndex_error_wrong_value_param")
         )
         suite.addTest(TestEthNamespaceTransactionWS("test_eth_getTransactionByBlockHashAndIndex_success"))
+        suite.addTest(TestEthNamespaceTransactionWS("test_eth_getTransactionByBlockHashAndIndex_Blob_success"))
         suite.addTest(TestEthNamespaceTransactionWS("test_eth_getTransactionByBlockNumberAndIndex_error_no_param"))
         suite.addTest(
             TestEthNamespaceTransactionWS("test_eth_getTransactionByBlockNumberAndIndex_error_wrong_value_param")
@@ -1770,6 +1821,7 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
         suite.addTest(TestEthNamespaceTransactionWS("test_eth_getTransactionByBlockNumberAndIndex_success"))
         suite.addTest(TestEthNamespaceTransactionWS("test_eth_getRawTransactionByBlockNumberAndIndex_error_no_param"))
         suite.addTest(TestEthNamespaceTransactionWS("test_eth_getRawTransactionByBlockNumberAndIndex_success"))
+        suite.addTest(TestEthNamespaceTransactionWS("test_eth_getRawTransactionByBlockNumberAndIndex_Blob_success"))
         suite.addTest(
             TestEthNamespaceTransactionWS("test_eth_getRawTransactionByBlockNumberAndIndex_success_empty_slice_result")
         )
@@ -1777,6 +1829,7 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
         suite.addTest(TestEthNamespaceTransactionWS("test_eth_getTransactionReceipt_error_wrong_type_param"))
         suite.addTest(TestEthNamespaceTransactionWS("test_eth_getTransactionReceipt_success_wrong_value_param"))
         suite.addTest(TestEthNamespaceTransactionWS("test_eth_getTransactionReceipt_success"))
+        suite.addTest(TestEthNamespaceTransactionWS("test_eth_getTransactionReceipt_Blob_success"))
         suite.addTest(TestEthNamespaceTransactionWS("test_eth_call_error_no_param1"))
         suite.addTest(TestEthNamespaceTransactionWS("test_eth_call_error_no_param2"))
         suite.addTest(TestEthNamespaceTransactionWS("test_eth_call_error_no_param3"))

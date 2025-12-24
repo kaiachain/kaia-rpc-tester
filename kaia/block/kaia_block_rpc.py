@@ -311,6 +311,22 @@ class TestKaiaNamespaceBlockRPC(unittest.TestCase):
         self.assertIsNone(error)
         kaia_common.checkBaseFeePerGasFieldAndValue(self, result)
 
+    def test_kaia_getBlockByHash_Blob_success(self):
+        method = f"{self.ns}_getBlockByNumber"
+        blobTx = test_data_set.get("blobTxData", [])[0]
+        num = blobTx["result"]["blockNumber"]
+        params = [num, True]
+        result, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        kaia_common.checkBaseFeePerGasFieldAndValue(self, result)
+        blockHash = result["hash"]
+
+        method = f"{self.ns}_getBlockByHash"
+        params = [blockHash, True]
+        _, error = Utils.call_rpc(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        kaia_common.checkBaseFeePerGasFieldAndValue(self, result)
+
     def test_kaia_getBlockByNumber_error_no_param(self):
         method = f"{self.ns}_getBlockByNumber"
         num = "latest"
@@ -689,6 +705,7 @@ class TestKaiaNamespaceBlockRPC(unittest.TestCase):
         suite.addTest(TestKaiaNamespaceBlockRPC("test_kaia_getBlockByHash_error_wrong_value_param"))
 
         suite.addTest(TestKaiaNamespaceBlockRPC("test_kaia_getBlockByHash_success"))
+        suite.addTest(TestKaiaNamespaceBlockRPC("test_kaia_getBlockByHash_Blob_success"))
 
         suite.addTest(TestKaiaNamespaceBlockRPC("test_kaia_getBlockByNumber_error_no_param"))
         suite.addTest(TestKaiaNamespaceBlockRPC("test_kaia_getBlockByNumber_error_wrong_type_param1"))

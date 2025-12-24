@@ -50,14 +50,54 @@ def checkBaseFeePerGasFieldAndValue(self, result, value=""):
 
 def checkGasPriceField(self, result):
     self.assertIsNotNone(result["gasPrice"])
-    if result["type"] == "0x2" or result["type"] == "0x4":  # TxTypeEthereumDynamicFee, TxTypeEthereumSetCode
+    # TxTypeEthereumDynamicFee: 0x2, TxTypeEthereumBlob: 0x3, TxTypeEthereumSetCode: 0x4
+    if result["type"] == "0x2" or result["type"] == "0x3" or result["type"] == "0x4":
         self.assertIsNotNone(result["maxFeePerGas"])
         self.assertIsNotNone(result["maxPriorityFeePerGas"])
 
+def checkBlobField(self, result):
+    # TxTypeEthereumBlob: 0x3
+    if result["type"] == "0x3":
+        self.assertIsNotNone(result["maxFeePerBlobGas"])
+        self.assertIsNotNone(result["blobVersionedHashes"])
+        self.assertIsNone(result.get("sidecar"))
+
 def checkAuthorizationListField(self, result):
-    if result["type"] == "0x4":  # TxTypeEthereumSetCode
+    # TxTypeEthereumSetCode: 0x4
+    if result["type"] == "0x4":
         self.assertIsNotNone(result["authorizationList"])
 
+def checkBlobSidecarResult(self, sidecar, blobTx, fullBlob=False):
+    self.assertIn("blobSidecar", sidecar)
+    self.assertIn("blockHash", sidecar)
+    self.assertIn("blockNumber", sidecar)
+    self.assertIn("txHash", sidecar)
+    self.assertIn("txIndex", sidecar)
+
+    blobSidecar = sidecar["blobSidecar"]
+    self.assertIn("version", blobSidecar)
+    self.assertIn("blobs", blobSidecar)
+    self.assertIn("commitments", blobSidecar)
+    self.assertIn("proofs", blobSidecar)
+
+    # Check blob size based on fullBlob flag
+    blobs = blobSidecar["blobs"]
+    self.assertIsInstance(blobs, list)
+    if len(blobs) > 0:
+        blob_str = blobs[0]
+        self.assertIsInstance(blob_str, str)
+        self.assertTrue(blob_str.startswith("0x"))
+        if fullBlob:
+            # 131072 bytes = 262144 hex characters + 2 for "0x" = 262146 characters total
+            self.assertEqual(len(blob_str), 262146)
+        else:
+            # 32 bytes = 64 hex characters + 2 for "0x" = 66 characters total
+            self.assertEqual(len(blob_str), 66)
+
+    self.assertEqual(sidecar["blockHash"], blobTx["result"]["blockHash"])
+    self.assertEqual(sidecar["blockNumber"], blobTx["result"]["blockNumber"])
+    self.assertEqual(sidecar["txHash"], blobTx["result"]["hash"])
+    self.assertEqual(sidecar["txIndex"], blobTx["result"]["index"])
 
 def checkEthereumBlockOrHeaderFormat(self, actualReturn):
     expectedReturn = json.loads(
