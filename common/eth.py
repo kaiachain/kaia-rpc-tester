@@ -140,10 +140,10 @@ def checkEthereumBlockOrHeaderFormat(self, actualReturn):
     immutable_fields = {
         "extraData": ETH_EXTRADATA,
         "sha3Uncles": ETH_SHA3_UNCLES,
-        "mixHash": ETH_MIX_HASH,
         "nonce": ETH_NONCE,
         "difficulty": ETH_DIFFICULTY,
     }
+    # mixHash is not in immutable_fields because it can be a random value when Randao is enabled
 
     for field in expectedReturn.get("result").keys():
         # check the fields of actualReturn exists also in gethReturn.
@@ -151,6 +151,13 @@ def checkEthereumBlockOrHeaderFormat(self, actualReturn):
         actualValue = actualReturn.get(field)
         if field in immutable_fields:
             self.assertEqual(immutable_fields.get(field), actualValue)
+        elif field == "mixHash":
+            # mixHash can be a random value when Randao is enabled, so just check it's a valid hex string
+            self.assertIsNotNone(actualValue)
+            self.assertTrue(
+                Utils.is_hex(actualValue),
+                f"{field} must be a hexadecimal string",
+            )
         elif field == "uncles":
             if actualValue is not None:
                 # Uncles must not be existed in actualReturn from Kaia node.
