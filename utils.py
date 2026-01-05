@@ -14,6 +14,7 @@ from websocket._core import create_connection
 from datetime import datetime
 from errors import ERRORS
 from enum import Enum
+from test_data import BLOB_TEST_DATA
 
 CURRENT_DIR = os.path.abspath(os.path.dirname(__file__))
 PROJECT_ROOT_DIR = pathlib.Path(CURRENT_DIR)
@@ -545,7 +546,7 @@ class Utils(unittest.TestCase):
         return Utils.parse_conf_value(conf_key) or ""
 
     @staticmethod
-    def generate_blob_raw_data(blob_file_path: str, chain_id: int = 1, nonce: int = 0,
+    def generate_blob_raw_data(blob_data: str, chain_id: int = 1, nonce: int = 0,
                                 to_address: str = "", gas_limit: int = 21000,
                                 gas_tip_cap: int = 1, gas_fee_cap: int = 1,
                                 blob_fee_cap: int = 1, value: int = 0,
@@ -553,7 +554,7 @@ class Utils(unittest.TestCase):
         """
         Generate RLP-encoded raw data for blob transaction using generate_raw_data.go.
         Args:
-            blob_file_path: Path to the blob data file
+            blob_data: Blob data as string to pass via stdin
             chain_id: Chain ID (default: 1)
             nonce: Transaction nonce (default: 0)
             to_address: Recipient address (default: empty string)
@@ -572,16 +573,10 @@ class Utils(unittest.TestCase):
         if not os.path.exists(go_tool_path):
             raise FileNotFoundError(f"Go tool not found: {go_tool_path}")
 
-        if not os.path.exists(blob_file_path):
-            raise FileNotFoundError(f"Blob file not found: {blob_file_path}")
-
-        # Convert to absolute path for blob file
-        blob_file_path = os.path.abspath(blob_file_path)
-
         # Build command arguments
+        # Note: blob_data will be passed via stdin (subprocess.run's input parameter)
         cmd_args = [
             "go", "run", "generate_raw_data.go",
-            "-blob", blob_file_path,
             "-chainid", str(chain_id),
             "-nonce", str(nonce),
             "-gas", str(gas_limit),
@@ -602,6 +597,7 @@ class Utils(unittest.TestCase):
             result = subprocess.run(
                 cmd_args,
                 cwd=helper_tools_dir,
+                input=blob_data,
                 capture_output=True,
                 text=True,
                 check=True
@@ -615,7 +611,7 @@ class Utils(unittest.TestCase):
 
     @staticmethod
     def generate_blob_raw_transaction(endpoint, test_data_set, namespace="kaia",
-                                      blob_file_path=None, gas_limit=60400,
+                                      blob_data=None, gas_limit=60400,
                                       gas_price=None, value=2441, to_address=None):
         """
         Generate signed raw blob transaction data using generate_raw_data.go.
@@ -623,7 +619,7 @@ class Utils(unittest.TestCase):
             endpoint: RPC endpoint URL
             test_data_set: Test data dictionary containing account information
             namespace: RPC namespace (default: "kaia", use "eth" for Ethereum format)
-            blob_file_path: Path to blob file (default: test_data_blob.txt in project root)
+            blob_data: Blob data as string (default: BLOB_TEST_DATA constant)
             gas_limit: Gas limit (default: 60400)
             gas_price: Gas price (default: from test_data_set["unitGasPrice"])
             value: Transaction value (default: 2441)
@@ -649,11 +645,6 @@ class Utils(unittest.TestCase):
         if error is not None:
             return None, None, None, None
 
-        # Get blob file path
-        if blob_file_path is None:
-            # Default to test_data_blob.txt in project root
-            blob_file_path = os.path.join(PROJECT_ROOT_DIR, "test_data_blob.txt")
-
         # Set transaction parameters
         if to_address is None:
             to_address = test_data_set["account"]["sender"]["address"]
@@ -663,9 +654,13 @@ class Utils(unittest.TestCase):
 
         private_key = test_data_set["account"]["sender"]["privateKey"]
 
-        # Generate signed raw data
+        # Use BLOB_TEST_DATA constant if blob_data is not provided
+        if blob_data is None:
+            blob_data = BLOB_TEST_DATA
+
+        # Generate signed raw data using blob_data directly via stdin
         raw_data = Utils.generate_blob_raw_data(
-            blob_file_path=blob_file_path,
+            blob_data=blob_data,
             chain_id=int(chainId, 16),
             nonce=int(nonce, 16),
             to_address=to_address,

@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"hash"
+	"io"
 	"math/big"
 	"os"
 
@@ -20,7 +21,6 @@ const BLOB_SIZE = 131072 // 4096 * 32 bytes
 
 func main() {
 	var (
-		blobFilePath  string
 		chainID       int64
 		nonce         uint64
 		to            string
@@ -31,7 +31,6 @@ func main() {
 		value         int64
 		privateKeyHex string
 	)
-	flag.StringVar(&blobFilePath, "blob", "", "Path to blob file")
 	flag.Int64Var(&chainID, "chainid", 1, "Chain ID")
 	flag.Uint64Var(&nonce, "nonce", 0, "Nonce")
 	flag.StringVar(&to, "to", "", "Recipient address")
@@ -43,15 +42,10 @@ func main() {
 	flag.StringVar(&privateKeyHex, "privateKey", "", "Private key in hex format (with or without 0x prefix)")
 	flag.Parse()
 
-	if blobFilePath == "" {
-		fmt.Fprintf(os.Stderr, "Error: blob file path is required\n")
-		os.Exit(1)
-	}
-
-	// Read blob data from file
-	blobData, err := os.ReadFile(blobFilePath)
+	// Read blob data from stdin
+	blobData, err := io.ReadAll(os.Stdin)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: failed to read blob file: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Error: failed to read from stdin: %v\n", err)
 		os.Exit(1)
 	}
 
