@@ -47,6 +47,10 @@ def checkBaseFeePerGasFieldAndValue(self, result, value=""):
             value = "0x0"
         self.assertEqual(result["baseFeePerGas"], value)
 
+def checkBlobRelatedHeaderFieldAndValue(self, result, value=""):
+    self.assertIsNotNone(result)
+    self.assertIsNotNone(result["blobGasUsed"])
+    self.assertIsNotNone(result["excessBlobGas"])
 
 def checkGasPriceField(self, result):
     self.assertIsNotNone(result["gasPrice"])

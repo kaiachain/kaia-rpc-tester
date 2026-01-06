@@ -319,6 +319,7 @@ class TestKaiaNamespaceBlockWS(unittest.TestCase):
         result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
         kaia_common.checkBaseFeePerGasFieldAndValue(self, result)
+        kaia_common.checkBlobRelatedHeaderFieldAndValue(self, result)
         blockHash = result["hash"]
 
         method = f"{self.ns}_getBlockByHash"
@@ -326,6 +327,7 @@ class TestKaiaNamespaceBlockWS(unittest.TestCase):
         result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
         kaia_common.checkBaseFeePerGasFieldAndValue(self, result)
+        kaia_common.checkBlobRelatedHeaderFieldAndValue(self, result)
 
     def test_kaia_getBlockByNumber_error_no_param(self):
         method = f"{self.ns}_getBlockByNumber"

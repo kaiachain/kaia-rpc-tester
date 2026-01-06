@@ -305,6 +305,7 @@ class TestEthNamespaceBlockWS(unittest.TestCase):
         result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
         eth_common.checkBaseFeePerGasFieldAndValue(self, result)
+        eth_common.checkBlobRelatedHeaderFieldAndValue(self, result)
         blockHash = result["hash"]
 
         method = f"{self.ns}_getBlockByHash"
@@ -312,6 +313,7 @@ class TestEthNamespaceBlockWS(unittest.TestCase):
         result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
         self.assertIsNone(error)
         eth_common.checkBaseFeePerGasFieldAndValue(self, result)
+        eth_common.checkBlobRelatedHeaderFieldAndValue(self, result)
 
     def test_eth_getBlockByNumber_error_no_param(self):
         method = f"{self.ns}_getBlockByNumber"
