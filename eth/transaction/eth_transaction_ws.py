@@ -997,7 +997,8 @@ class TestEthNamespaceTransactionWS(unittest.TestCase):
         rawData, nonce, chainId, _ = Utils.generate_blob_raw_transaction(
             endpoint=self.endpoint,
             test_data_set=test_data_set,
-            namespace=self.ns
+            namespace=self.ns,
+            log_path=self.log_path
         )
         self.assertIsNotNone(rawData)
         self.assertIsNotNone(nonce)

@@ -684,7 +684,8 @@ def makeBlobTxData():
     raw_data, nonce, chainId, _ = Utils.generate_blob_raw_transaction(
         endpoint=endpoint,
         test_data_set=test_data_set,
-        namespace="kaia"
+        namespace="kaia",
+        log_path=log_path
     )
 
     if raw_data is None:

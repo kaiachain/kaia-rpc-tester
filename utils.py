@@ -612,7 +612,8 @@ class Utils(unittest.TestCase):
     @staticmethod
     def generate_blob_raw_transaction(endpoint, test_data_set, namespace="kaia",
                                       blob_data=None, gas_limit=60400,
-                                      gas_price=None, value=2441, to_address=None):
+                                      gas_price=None, value=2441, to_address=None,
+                                      log_path=None):
         """
         Generate signed raw blob transaction data using generate_raw_data.go.
         Args:
@@ -624,10 +625,12 @@ class Utils(unittest.TestCase):
             gas_price: Gas price (default: from test_data_set["unitGasPrice"])
             value: Transaction value (default: 2441)
             to_address: Recipient address (default: from test_data_set["account"]["sender"]["address"])
+            log_path: Log file path (default: None, will be obtained internally if not provided)
         Returns:
             tuple: (raw_data, nonce, chainId, txHash) or (None, None, None, None) on error
         """
-        _, _, log_path = Utils.get_log_filename_with_path()
+        if log_path is None:
+            _, _, log_path = Utils.get_log_filename_with_path()
 
         # Get nonce (use "pending" to include pending transactions)
         method = f"{namespace}_getTransactionCount"
