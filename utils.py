@@ -445,6 +445,8 @@ class Utils(unittest.TestCase):
             "baseFeePerGas",
             "randomReveal",
             "mixhash",
+            "excessBlobGas",
+            "blobGasUsed",
         ]
         for field in optional_fields:
             if field in header:
@@ -492,6 +494,8 @@ class Utils(unittest.TestCase):
         optional_fields = [
             "baseFeePerGas",
             "randomReveal",
+            "excessBlobGas",
+            "blobGasUsed",
         ]
         for field in optional_fields:
             if field in header:
