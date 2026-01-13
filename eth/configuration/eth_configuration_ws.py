@@ -46,6 +46,12 @@ class TestEthNamespaceConfigurationWS(unittest.TestCase):
         _, error = Utils.call_ws(self.endpoint, method, [], self.log_path)
         self.assertIsNone(error)
 
+    def test_eth_config_success(self):
+        method = f"{self.ns}_config"
+        params = None
+        _, error = Utils.call_ws(self.endpoint, method, [], self.log_path)
+        self.assertIsNone(error)
+
     @staticmethod
     def suite():
         suite = unittest.TestSuite()
@@ -56,5 +62,6 @@ class TestEthNamespaceConfigurationWS(unittest.TestCase):
         suite.addTest(TestEthNamespaceConfigurationWS("test_eth_gasPrice_success"))
         suite.addTest(TestEthNamespaceConfigurationWS("test_eth_chainId_success"))
         suite.addTest(TestEthNamespaceConfigurationWS("test_eth_chainId_success_wrong_value_param"))
+        suite.addTest(TestEthNamespaceConfigurationWS("test_eth_config_success"))
 
         return suite
