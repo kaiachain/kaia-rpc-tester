@@ -46,14 +46,28 @@ def checkBaseFeePerGasFieldAndValue(self, result, value=""):
             value = "0x0"
         self.assertEqual(result["baseFeePerGas"], value)
 
+def checkBlobRelatedHeaderFieldAndValue(self, result, value=""):
+    self.assertIsNotNone(result)
+    self.assertIsNotNone(result["blobGasUsed"])
+    self.assertIsNotNone(result["excessBlobGas"])
+
 def checkGasPriceField(self, result):
     self.assertIsNotNone(result["gasPrice"])
-    if result["typeInt"] == 30722 or result["typeInt"] == 30724:  # TxTypeEthereumDynamicFee, TxTypeEthereumSetCode
+    # TxTypeEthereumDynamicFee: 30722, TxTypeEthereumBlob: 30723, TxTypeEthereumSetCode: 30724
+    if result["typeInt"] == 30722 or result["typeInt"] == 30723 or result["typeInt"] == 30724:
         self.assertIsNotNone(result["maxFeePerGas"])
         self.assertIsNotNone(result["maxPriorityFeePerGas"])
 
+def checkBlobField(self, result):
+    # TxTypeEthereumBlob: 30723
+    if result["typeInt"] == 30723:
+        self.assertIsNotNone(result["maxFeePerBlobGas"])
+        self.assertIsNotNone(result["blobVersionedHashes"])
+        self.assertIsNone(result.get("sidecar"))
+
 def checkAuthorizationListField(self, result):
-    if result["typeInt"] == 30724:  # TxTypeEthereumSetCode
+    # TxTypeEthereumSetCode: 30724
+    if result["typeInt"] == 30724:
         self.assertIsNotNone(result["authorizationList"])
 
 # In KIP228, EOA now returns storageRoot, codeHash, codeFormat, and vmVersion when gettingAccount.

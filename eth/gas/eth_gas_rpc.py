@@ -1,5 +1,5 @@
 import unittest
-from utils import Utils
+from utils import Utils, BLOB_BASE_FEE_MULTIPLIER
 from common import eth as eth_common
 
 # test_data_set is injected by rpc-tester/main.py
@@ -32,6 +32,12 @@ class TestEthNamespaceGasRPC(unittest.TestCase):
         self.assertLessEqual(length, blockCount)
         self.assertEqual(length, len(result["gasUsedRatio"]))
         self.assertEqual(length + 1, len(result["baseFeePerGas"]))
+        self.assertEqual(length + 1, len(result["blobBaseFeePerGas"]))
+        for i in range(len(result["baseFeePerGas"])):
+            baseFee = int(result["baseFeePerGas"][i], 16)
+            blobBaseFee = int(result["blobBaseFeePerGas"][i], 16)
+            expectedBlobBaseFee = baseFee * BLOB_BASE_FEE_MULTIPLIER
+            self.assertEqual(blobBaseFee, expectedBlobBaseFee)
 
         lastBlock = "pending"
         params = [blockCount, lastBlock, rewardPercentiles]
@@ -41,6 +47,12 @@ class TestEthNamespaceGasRPC(unittest.TestCase):
         self.assertLessEqual(length, blockCount)
         self.assertEqual(length, len(result2["gasUsedRatio"]))
         self.assertEqual(length + 1, len(result2["baseFeePerGas"]))
+        self.assertEqual(length + 1, len(result2["blobBaseFeePerGas"]))
+        for i in range(len(result2["baseFeePerGas"])):
+            baseFee = int(result2["baseFeePerGas"][i], 16)
+            blobBaseFee = int(result2["blobBaseFeePerGas"][i], 16)
+            expectedBlobBaseFee = baseFee * BLOB_BASE_FEE_MULTIPLIER
+            self.assertEqual(blobBaseFee, expectedBlobBaseFee)
 
         # NOTE: Making the difference between latest and pending Receipts is hard, so we check the gap between the two oldest block
         # on CN, the both oldest block gap is expected to be 1

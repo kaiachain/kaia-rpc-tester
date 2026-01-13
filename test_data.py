@@ -1,6 +1,3 @@
-import json
-from utils import Utils
-
 # Below value are immutable which means Kaia node always return that values
 # when you call RPC with `eth_` namesapce APIs.
 ETH_BASEFEE_PER_GAS = "0x5d21dba00"
@@ -30,3 +27,4 @@ DUMMY_HASHRATE = "0x15"
 DUMMY_BLOCK_NUMBER = "0x20"
 DUMMY_INDEX = "0x1"
 ETH_ZERO_UNCLE_COUNT = "0x0"
+BLOB_TEST_DATA = "hello, this is blob test data."

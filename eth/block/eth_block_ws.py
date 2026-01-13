@@ -297,6 +297,24 @@ class TestEthNamespaceBlockWS(unittest.TestCase):
         eth_common.checkBaseFeePerGasFieldAndValue(self, result)
         eth_common.checkEthereumBlockOrHeaderFormat(self, result)
 
+    def test_eth_getBlockByHash_Blob_success(self):
+        method = f"{self.ns}_getBlockByNumber"
+        blobTx = test_data_set.get("blobTxData", [])[0]
+        num = blobTx["result"]["blockNumber"]
+        params = [num, True]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        eth_common.checkBaseFeePerGasFieldAndValue(self, result)
+        eth_common.checkBlobRelatedHeaderFieldAndValue(self, result)
+        blockHash = result["hash"]
+
+        method = f"{self.ns}_getBlockByHash"
+        params = [blockHash, True]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        eth_common.checkBaseFeePerGasFieldAndValue(self, result)
+        eth_common.checkBlobRelatedHeaderFieldAndValue(self, result)
+
     def test_eth_getBlockByNumber_error_no_param(self):
         method = f"{self.ns}_getBlockByNumber"
         num = "latest"
@@ -510,6 +528,66 @@ class TestEthNamespaceBlockWS(unittest.TestCase):
         self.assertIsNone(error)
         self.assertIsNone(result)
 
+    def test_eth_getBlobSidecars_success(self):
+        method = f"{self.ns}_getBlobSidecars"
+        blobTx = test_data_set.get("blobTxData", [])[0]
+        blockNumber = blobTx["result"]["blockNumber"]
+        params = [blockNumber, False]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        self.assertIsNotNone(result)
+        self.assertIsInstance(result, list)
+        self.assertEqual(len(result), 1)
+        sidecar = result[0]
+        eth_common.checkBlobSidecarResult(self, sidecar, blobTx, fullBlob=False)
+
+    def test_eth_getBlobSidecars_FullBlob_success(self):
+        method = f"{self.ns}_getBlobSidecars"
+        blobTx = test_data_set.get("blobTxData", [])[0]
+        blockNumber = blobTx["result"]["blockNumber"]
+        params = [blockNumber, True]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        self.assertIsNotNone(result)
+        self.assertIsInstance(result, list)
+        self.assertEqual(len(result), 1)
+        sidecar = result[0]
+        eth_common.checkBlobSidecarResult(self, sidecar, blobTx, fullBlob=True)
+
+    def test_eth_getBlobSidecarByTxHash_success(self):
+        method = f"{self.ns}_getBlobSidecarByTxHash"
+        blobTx = test_data_set.get("blobTxData", [])[0]
+        txHash = blobTx["result"]["hash"]
+        params = [txHash, False]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        self.assertIsNotNone(result)
+        self.assertIsInstance(result, dict)
+        eth_common.checkBlobSidecarResult(self, result, blobTx, fullBlob=False)
+
+    def test_eth_getBlobSidecarByTxHash_FullBlob_success(self):
+        method = f"{self.ns}_getBlobSidecarByTxHash"
+        blobTx = test_data_set.get("blobTxData", [])
+        if not blobTx:
+            self.skipTest("No blob transaction data available in test_data_set")
+        txHash = blobTx[0]["result"]["hash"]
+        params = [txHash, True]
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        self.assertIsNotNone(result)
+        self.assertIsInstance(result, dict)
+        eth_common.checkBlobSidecarResult(self, result, blobTx[0], fullBlob=True)
+
+    def test_eth_blobBaseFee_success(self):
+        method = f"{self.ns}_blobBaseFee"
+        params = []
+        result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        self.assertIsNotNone(result)
+        self.assertIsInstance(result, str)
+        self.assertTrue(result.startswith("0x"))
+        self.assertTrue(Utils.is_hex(result))
+
     @staticmethod
     def suite():
         suite = unittest.TestSuite()
@@ -544,6 +622,7 @@ class TestEthNamespaceBlockWS(unittest.TestCase):
 
         suite.addTest(TestEthNamespaceBlockWS("test_eth_getBlockByHash_error_wrong_value_param"))
         suite.addTest(TestEthNamespaceBlockWS("test_eth_getBlockByHash_success"))
+        suite.addTest(TestEthNamespaceBlockWS("test_eth_getBlockByHash_Blob_success"))
 
         suite.addTest(TestEthNamespaceBlockWS("test_eth_getBlockByNumber_error_no_param"))
         suite.addTest(TestEthNamespaceBlockWS("test_eth_getBlockByNumber_error_wrong_type_param1"))
@@ -580,5 +659,11 @@ class TestEthNamespaceBlockWS(unittest.TestCase):
         suite.addTest(TestEthNamespaceBlockWS("test_eth_getUncleCountByBlockNumber_success"))
         suite.addTest(TestEthNamespaceBlockWS("test_eth_getUncleCountByBlockHash_error_no_param"))
         suite.addTest(TestEthNamespaceBlockWS("test_eth_getUncleCountByBlockHash_success"))
+
+        suite.addTest(TestEthNamespaceBlockWS("test_eth_getBlobSidecars_success"))
+        suite.addTest(TestEthNamespaceBlockWS("test_eth_getBlobSidecars_FullBlob_success"))
+        suite.addTest(TestEthNamespaceBlockWS("test_eth_getBlobSidecarByTxHash_success"))
+        suite.addTest(TestEthNamespaceBlockWS("test_eth_getBlobSidecarByTxHash_FullBlob_success"))
+        suite.addTest(TestEthNamespaceBlockWS("test_eth_blobBaseFee_success"))
 
         return suite

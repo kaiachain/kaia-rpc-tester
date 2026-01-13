@@ -1038,6 +1038,23 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
         self.assertIsNone(error)
         self.assertRegex(result, "^0x[0-9a-f]{64}$")
 
+    def test_kaia_sendRawTransaction_Blob_FromRawData_success(self):
+        rawData, nonce, chainId, _ = Utils.generate_blob_raw_transaction(
+            endpoint=self.endpoint,
+            test_data_set=test_data_set,
+            namespace=self.ns,
+            log_path=self.log_path
+        )
+        self.assertIsNotNone(rawData)
+        self.assertIsNotNone(nonce)
+        self.assertIsNotNone(chainId)
+
+        method = f"{self.ns}_sendRawTransaction"
+        params = [rawData]
+        txHash, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+        self.assertIsNone(error)
+        self.assertRegex(txHash, "^0x[0-9a-f]{64}$")
+
     def test_kaia_getTransactionByBlockHashAndIndex_error_no_param(self):
         method = f"{self.ns}_getTransactionByBlockHashAndIndex"
 
@@ -1075,6 +1092,16 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
             self.assertIsNone(error)
             kaia_common.checkGasPriceField(self, result)
             kaia_common.checkAuthorizationListField(self, result)
+
+    def test_kaia_getTransactionByBlockHashAndIndex_Blob_success(self):
+        method = f"{self.ns}_getTransactionByBlockHashAndIndex"
+        blobTxData = test_data_set.get("blobTxData", [])
+        for blobTx in blobTxData:
+            params = [blobTx["result"]["blockHash"], blobTx["result"]["index"]]
+            result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+            self.assertIsNone(error)
+            kaia_common.checkGasPriceField(self, result)
+            kaia_common.checkBlobField(self, result)
 
     def test_kaia_getTransactionByBlockNumberAndIndex_error_no_param(self):
         method = f"{self.ns}_getTransactionByBlockNumberAndIndex"
@@ -1121,6 +1148,17 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
             _, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
             self.assertIsNone(error)
 
+    def test_kaia_getRawTransactionByBlockNumberAndIndex_Blob_success(self):
+        method = f"{self.ns}_getRawTransactionByBlockNumberAndIndex"
+
+        blobTxData = test_data_set.get("blobTxData", [])
+        for blobTx in blobTxData:
+            params = [blobTx["result"]["blockNumber"], blobTx["result"]["index"]]
+            result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+            self.assertIsNone(error)
+            self.assertRegex(result, "^0x[0-9a-f]+$")
+            self.assertNotEqual(result, "0x")
+
     def test_kaia_getRawTransactionByBlockNumberAndIndex_success_empty_slice_result(self):
         method = f"{self.ns}_getRawTransactionByBlockNumberAndIndex"
 
@@ -1159,6 +1197,20 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
             kaia_common.checkGasPriceField(self, result)
             kaia_common.checkAuthorizationListField(self, result)
             self.assertIsNotNone(result["effectiveGasPrice"])
+
+    def test_kaia_getTransactionReceipt_Blob_success(self):
+        method = f"{self.ns}_getTransactionReceipt"
+        blobTxData = test_data_set["blobTxData"]
+        for blobTx in blobTxData:
+            params = [blobTx["result"]["hash"]]
+            result, error = Utils.call_ws(self.endpoint, method, params, self.log_path)
+            self.assertIsNone(error)
+            kaia_common.checkGasPriceField(self, result)
+            kaia_common.checkBlobField(self, result)
+            self.assertIsNotNone(result["effectiveGasPrice"])
+            self.assertEqual(result["type"], "TxTypeEthereumBlob")
+            self.assertIsNotNone(result["blobGasUsed"])
+            self.assertIsNotNone(result["blobGasPrice"])
 
     def test_kaia_call_error_no_param1(self):
         method = f"{self.ns}_call"
@@ -2269,6 +2321,7 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
         suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_sendRawTransaction_DynamicFee_success"))
         suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_sendRawTransaction_SetCode_error_wrong_prefix"))
         suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_sendRawTransaction_SetCode_success"))
+        suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_sendRawTransaction_Blob_FromRawData_success"))
 
         suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_getTransactionByBlockHashAndIndex_error_no_param"))
         suite.addTest(
@@ -2278,6 +2331,7 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
             TestKaiaNamespaceTransactionWS("test_kaia_getTransactionByBlockHashAndIndex_error_wrong_value_param")
         )
         suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_getTransactionByBlockHashAndIndex_success"))
+        suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_getTransactionByBlockHashAndIndex_Blob_success"))
         suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_getTransactionByBlockNumberAndIndex_error_no_param"))
         suite.addTest(
             TestKaiaNamespaceTransactionWS("test_kaia_getTransactionByBlockNumberAndIndex_error_wrong_value_param")
@@ -2285,6 +2339,7 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
         suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_getTransactionByBlockNumberAndIndex_success"))
         suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_getRawTransactionByBlockNumberAndIndex_error_no_param"))
         suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_getRawTransactionByBlockNumberAndIndex_success"))
+        suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_getRawTransactionByBlockNumberAndIndex_Blob_success"))
         suite.addTest(
             TestKaiaNamespaceTransactionWS("test_kaia_getRawTransactionByBlockNumberAndIndex_success_empty_slice_result")
         )
@@ -2292,6 +2347,7 @@ class TestKaiaNamespaceTransactionWS(unittest.TestCase):
         suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_getTransactionReceipt_error_wrong_type_param"))
         suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_getTransactionReceipt_success_wrong_value_param"))
         suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_getTransactionReceipt_success"))
+        suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_getTransactionReceipt_Blob_success"))
         suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_call_error_no_param1"))
         suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_call_error_no_param2"))
         suite.addTest(TestKaiaNamespaceTransactionWS("test_kaia_call_error_no_param3"))
