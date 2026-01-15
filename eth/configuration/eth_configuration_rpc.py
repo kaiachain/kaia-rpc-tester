@@ -36,7 +36,6 @@ class TestEthNamespaceConfigurationRPC(unittest.TestCase):
 
     def test_eth_chainId_success(self):
         method = f"{self.ns}_chainId"
-        params = None
         _, error = Utils.call_rpc(self.endpoint, method, [], self.log_path)
         self.assertIsNone(error)
 
@@ -48,7 +47,6 @@ class TestEthNamespaceConfigurationRPC(unittest.TestCase):
 
     def test_eth_config_success(self):
         method = f"{self.ns}_config"
-        params = None
         _, error = Utils.call_rpc(self.endpoint, method, [], self.log_path)
         self.assertIsNone(error)
 
