@@ -285,7 +285,7 @@ def makeTxData():
     txValueOne = "0x1"
     txMemo = "0xb3f98adc0000000000000000000000000000000000000000000000000000000000000001"
     txKey = "0x01c0"
-    txGas = hex(3040000000)
+    txGas = hex(50000000)
     txGasPrice = test_data_set["unitGasPrice"]
     txContractAddress = test_data_set["contracts"]["unknown"]["address"][0]
     txContractExecutionData = test_data_set["contracts"]["unknown"]["input"]
