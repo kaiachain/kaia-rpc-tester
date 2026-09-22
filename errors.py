@@ -46,6 +46,7 @@ errors_json = """
     "arg1StringToUint":[-32602 ,"invalid argument 1: json: cannot unmarshal string into Go value of type uint"],
     "arg0StringToBool": [-32602 ,"invalid argument 0: json: cannot unmarshal string into Go value of type bool"],
     "arg0StringToSendtx": [-32602 ,"invalid argument 0: json: cannot unmarshal string into Go value of type api.SendTxArgs"],
+    "arg0StringToCallArgs": [-32602 ,"invalid argument 0: json: cannot unmarshal string into Go value of type api.CallArgs"],
     "arg0StringToCallArgsDataBytes": [-32602 ,"invalid argument 0: json: cannot unmarshal hex string without 0x prefix into Go struct field CallArgs.data of type hexutil.Bytes"],
     "arg0StringToEthTransactionArgsDataBytes": [-32602 ,"invalid argument 0: json: cannot unmarshal hex string without 0x prefix into Go struct field EthTransactionArgs.data of type hexutil.Bytes"],
     "arg1StringToBool": [-32602 ,"invalid argument 1: json: cannot unmarshal string into Go value of type bool"],
